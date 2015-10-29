@@ -490,6 +490,7 @@ class CSS{
     switch(true){
       case preg_match('/^\.(\w+)$/', $str, $m): return self::do_class($str);
       case preg_match('/^\#(\w+)$/', $str, $m): return self::do_id($str);
+      case preg_match('/^(\w+)$/', $str, $m): return "self::" . $str;
       default: return self::translate($str);
     }
   }
