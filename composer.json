@@ -1,0 +1,11 @@
+{
+  "name": "hrmatching/advanced_html_dom",
+  "type": "library",
+  "description": "",
+  "keywords": [
+  ],
+  "license": "MIT",
+  "require": {
+    "php": ">=5.4"
+  }
+}
