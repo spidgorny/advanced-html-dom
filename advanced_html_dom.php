@@ -76,7 +76,7 @@ class AdvancedHtmlBase{
       case 'index': return $this->search('./preceding-sibling::*')->length + 1;
 
       /*
-      DOMNode::insertBefore — Adds a new child 
+      DOMNode::insertBefore ï¿½ Adds a new child 
       */
 
       // simple-html-dom junk methods
@@ -154,7 +154,10 @@ class AdvancedHtmlDom extends AdvancedHtmlBase{
   }
 
   public function load($html, $is_xml = false){
-    $this->dom = new DOMDocument();
+    $encoding = mb_detect_encoding($html);
+    $html = mb_convert_encoding($html, 'HTML-ENTITIES', $encoding);
+
+    $this->dom = new DOMDocument('1.0', 'utf-8');
     if($is_xml){
       @$this->dom->loadXML(preg_replace('/xmlns=".*?"/ ', '', $html));
     } else {
