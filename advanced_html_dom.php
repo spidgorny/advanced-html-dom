@@ -37,7 +37,15 @@ class AdvancedHtmlBase{
     return $this;
   }
 
-  public function str($str){ return new Str($str); }
+  public function str(){ return new Str($this->text); }
+  public function match($re){
+    $str = new Str($this->text);
+    return $str->match($re);
+  }
+  public function scan($re){
+    $str = new Str($this->text);
+    return $str->scan($re);
+  }
   public function clean($str){ return trim(preg_replace('/\s+/', ' ', $str)); }
   public function trim($str){ return trim($str); }
 
@@ -693,7 +701,7 @@ class CSS{
   function match($regex, $group_number = 0){
     if(!preg_match($regex, $this->text, $m)) return false;
     $val = $m[$group_number];
-    return new Str($val);
+    return $val; // new Str($val);
   }
 
   function scan($regex, $group_number = 0){
