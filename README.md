@@ -1,4 +1,4 @@
-Note: This library is currently PHP5 only. It does not work with PHP7 yet.
+Update: I tested this library with php 7.0.1 - 7.0.5 as well as PHP 5.3 and up, everything seems to be working.
 
 The goal of this project is to be a DOM-based drop-in replacement for PHP's simple html dom library.
 
