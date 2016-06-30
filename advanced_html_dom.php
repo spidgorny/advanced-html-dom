@@ -499,6 +499,7 @@ class CSS{
       case preg_match('/^\.(\w+)$/', $str, $m): return self::do_class($str);
       case preg_match('/^\#(\w+)$/', $str, $m): return self::do_id($str);
       case preg_match('/^(\w+)$/', $str, $m): return "self::" . $str;
+      case preg_match('/^\[(.*)\]$/', $str, $m): return substr(self::do_braces($str), 1, -1);
       default: return self::translate($str);
     }
   }
@@ -737,4 +738,5 @@ function file_get_html($url){ return str_get_html(file_get_contents($url)); }
 function str_get_xml($html){ return new AdvancedHtmlDom($html, true); }
 function file_get_xml($url){ return str_get_xml(file_get_contents($url)); }
 }
+
 ?>
