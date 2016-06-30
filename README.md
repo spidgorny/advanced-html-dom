@@ -1,3 +1,5 @@
+Update: I tested this library with php 7.0.1 - 7.0.5 as well as PHP 5.3 and up, everything seems to be working.
+
 The goal of this project is to be a DOM-based drop-in replacement for PHP's simple html dom library.
 
 *How To Use* - The same way as simple. If you use file/str_get_html then you don't need to change anything. If you are instantiating with `new simple_html_dom()` then you will need to change that to `new AdvancedHtmlDom()`
