@@ -84,7 +84,7 @@ class AdvancedHtmlBase{
       case 'index': return $this->search('./preceding-sibling::*')->length + 1;
 
       /*
-      DOMNode::insertBefore — Adds a new child 
+      DOMNode::insertBefore â€” Adds a new child 
       */
 
       // simple-html-dom junk methods
@@ -105,7 +105,7 @@ class AdvancedHtmlBase{
 
       // attributes
       case 'hasattribute': return !$this->is_text && $this->node->getAttribute($args[0]);
-      case 'getattribute': return $this->$args[0];
+      case 'getattribute': return $this->node->getAttribute($args[0]);
       case 'setattribute': return $this->$args[0] = $args[1];
       case 'removeattribute': return $this->$args[0] = null;
 
