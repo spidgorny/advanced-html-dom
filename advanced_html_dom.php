@@ -105,9 +105,15 @@ class AdvancedHtmlBase{
 
       // attributes
       case 'hasattribute': return !$this->is_text && $this->node->getAttribute($args[0]);
+<<<<<<< HEAD
+      case 'getattribute': $arg = $args[0]; return $this->$arg;
+      case 'setattribute': $arg0 = $args[0]; $arg1 = $args[1]; return $this->$arg0 = $arg1;
+      case 'removeattribute': $arg = $args[0]; return $this->$arg = null;
+=======
       case 'getattribute': return $this->node->getAttribute($args[0]);
       case 'setattribute': return $this->$args[0] = $args[1];
       case 'removeattribute': return $this->$args[0] = null;
+>>>>>>> bb0d069485188a34ae67f2571a7f2cd2ed1535c4
 
       // wrap
       case 'wrap':
@@ -138,8 +144,10 @@ class AdvancedHtmlBase{
     if(preg_match(TAGS_REGEX, $key, $m)) return $this->find($m[1]);
     if(preg_match(TAG_REGEX, $key, $m)) return $this->find($m[1], 0);
     
-    if(preg_match('/(clean|trim|str)(.*)/', $key, $m)){
-      return $this->$m[1]($this->$m[2]);
+    if(preg_match('/(clean|trim|str)(.*)/', $key, $m) && isset($m[2])){
+      $arg1 = $m[1];
+      $arg2 = $m[2];
+      return $this->$arg1($this->$arg2);
     }
 
     if(!preg_match(ATTRIBUTE_REGEX, $key, $m)) trigger_error('Unknown method or property: ' . $key, E_USER_WARNING);
@@ -197,7 +205,7 @@ class AHTMLNodeList implements Iterator, Countable, ArrayAccess{
   abstract public void offsetUnset ( mixed $offset )
   */
 
-  public function offsetExists($offset){ return 0 <= $offset && $offset < $this->nodeList->length(); }
+  public function offsetExists($offset){ return 0 <= $offset && $offset < $this->nodeList->length; }
   public function offsetGet($offset){ return new AHTMLNode($this->nodeList->item($offset), $this->doc); }
   public function offsetSet($offset, $value){ trigger_error('offsetSet not implemented', E_USER_WARNING); }
   public function offsetUnset($offset){ trigger_error('offsetUnset not implemented', E_USER_WARNING); }
@@ -287,12 +295,18 @@ class AHTMLNodeList implements Iterator, Countable, ArrayAccess{
   */
 
     if(preg_match(ATTRIBUTES_REGEX, $key, $m) || preg_match('/^((clean|trim|str).*)s$/', $key, $m)){
-      foreach($this as $node){$retval[] = $node->$m[1];}
+      foreach($this as $node){
+        $arg = $m[1];
+        $retval[] = $node->$arg;
+      }
       return $retval;
     }
 
     if(preg_match(ATTRIBUTE_REGEX, $key, $m)){
-      foreach($this as $node){$retval[] = $node->$m[1];}
+      foreach($this as $node){
+        $arg = $m[1];
+        $retval[] = $node->$arg;
+      }
       return implode('', $retval);
     }
 
