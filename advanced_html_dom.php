@@ -84,7 +84,7 @@ class AdvancedHtmlBase{
       case 'index': return $this->search('./preceding-sibling::*')->length + 1;
 
       /*
-      DOMNode::insertBefore — Adds a new child 
+      DOMNode::insertBefore — Adds a new child
       */
 
       // simple-html-dom junk methods
@@ -105,15 +105,13 @@ class AdvancedHtmlBase{
 
       // attributes
       case 'hasattribute': return !$this->is_text && $this->node->getAttribute($args[0]);
-<<<<<<< HEAD
       case 'getattribute': $arg = $args[0]; return $this->$arg;
       case 'setattribute': $arg0 = $args[0]; $arg1 = $args[1]; return $this->$arg0 = $arg1;
       case 'removeattribute': $arg = $args[0]; return $this->$arg = null;
-=======
       case 'getattribute': return $this->node->getAttribute($args[0]);
       case 'setattribute': return $this->$args[0] = $args[1];
       case 'removeattribute': return $this->$args[0] = null;
->>>>>>> bb0d069485188a34ae67f2571a7f2cd2ed1535c4
+
 
       // wrap
       case 'wrap':
@@ -143,7 +141,7 @@ class AdvancedHtmlBase{
     // $doc->spans[x]
     if(preg_match(TAGS_REGEX, $key, $m)) return $this->find($m[1]);
     if(preg_match(TAG_REGEX, $key, $m)) return $this->find($m[1], 0);
-    
+
     if(preg_match('/(clean|trim|str)(.*)/', $key, $m) && isset($m[2])){
       $arg1 = $m[1];
       $arg2 = $m[2];
@@ -175,7 +173,7 @@ class AdvancedHtmlDom extends AdvancedHtmlBase{
       @$this->dom->loadXML(preg_replace('/xmlns=".*?"/ ', '', $html));
     } else {
       @$this->dom->loadHTML($html);
-    }    
+    }
     $this->xpath = new DOMXPath($this->dom);
     //$this->root = new AHTMLNode($this->dom->documentElement, $this->doc);
     $this->root = $this->at('body');
@@ -217,23 +215,23 @@ class AHTMLNodeList implements Iterator, Countable, ArrayAccess{
   public function rewind(){
     $this->counter = 0;
   }
-  
+
   public function current(){
     return new AHTMLNode($this->nodeList->item($this->counter), $this->doc);
   }
-  
+
   public function key(){
     return $this->counter;
   }
-  
+
   public function next(){
     $this->counter++;
   }
-  
+
   public function valid(){
     return $this->counter < $this->nodeList->length;
   }
-  
+
   public function last(){
     return ($this->nodeList->length > 0) ? new AHTMLNode($this->nodeList->item($this->nodeList->length - 1), $this->doc) : null;
   }
@@ -326,7 +324,7 @@ class AHTMLNodeList implements Iterator, Countable, ArrayAccess{
 
 class AHTMLNode extends AdvancedHtmlBase implements ArrayAccess{
   private $_path;
-  
+
   function __construct($node, $doc){
     $this->node = $node;
     $this->_path = $node->getNodePath();
@@ -343,13 +341,13 @@ class AHTMLNode extends AdvancedHtmlBase implements ArrayAccess{
 
   function replace($html){
     $node = empty($html) ? null : $this->before($html);
-    $this->remove(); 
+    $this->remove();
     return $node;
   }
 
   function before($html){
     $fragment = $this->get_fragment($html);
-    $this->node->parentNode->insertBefore($fragment, $this->node); 
+    $this->node->parentNode->insertBefore($fragment, $this->node);
     return new AHTMLNode($this->node->previousSibling, $this->doc);
   }
 
@@ -363,7 +361,7 @@ class AHTMLNode extends AdvancedHtmlBase implements ArrayAccess{
   }
 
   function decamelize($str){
-    $str = preg_replace('/(^|[a-z])([A-Z])/e', 'strtolower(strlen("\\1") ? "\\1_\\2" : "\\2")', $str); 
+    $str = preg_replace('/(^|[a-z])([A-Z])/e', 'strtolower(strlen("\\1") ? "\\1_\\2" : "\\2")', $str);
     return preg_replace('/ /', '_', strtolower($str));
   }
 
@@ -431,7 +429,7 @@ class AHTMLNode extends AdvancedHtmlBase implements ArrayAccess{
     } else {
       $this->node->removeAttribute($key);
     }
-    //trigger_error('offsetSet not implemented', E_USER_WARNING); 
+    //trigger_error('offsetSet not implemented', E_USER_WARNING);
   }
   public function offsetUnset($offset){ trigger_error('offsetUnset not implemented', E_USER_WARNING); }
 
@@ -575,7 +573,7 @@ class CSS{
     $tokens = preg_split($re, substr($str, 1, strlen($str) - 2), 0, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY);
 //    var_dump($tokens);
     $attr = trim(array_shift($tokens));
-//     && ) 
+//     && )
     if(!$op = @trim(array_shift($tokens))){
       switch(true){
         case preg_match('/^\d+$/', $attr): return "[count(preceding-sibling::*) = " . ($attr - 1) . "]"; // [2] -> [count(preceding-sibling::*) = 1]
@@ -634,7 +632,7 @@ class CSS{
     $retval = array();
     $re = '/(\((?>[^()]|(?R))*\)|\[(?>[^\[\]]|(?R))*\]|\s*[+~>]\s*| \s*)/';
     $item = '';
-    
+
     $last_nav = null;
     //echo "\n!" . $str . "!\n";
     //var_dump(preg_split($re, $str, 0, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY));
@@ -645,7 +643,7 @@ class CSS{
         case '>':
         case '~':
         case '+':
-        case '': 
+        case '':
           if(!empty($item)) $retval[] = self::translate_part(trim($item), $last_nav);
           $item = '';
           $last_nav = $token;
@@ -706,7 +704,7 @@ class CSS{
  * Str
  */
 
- class Str{ 
+ class Str{
   var $text;
 
   function __construct($str){
