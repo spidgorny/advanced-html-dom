@@ -27,7 +27,7 @@ class AdvancedHtmlDom extends AdvancedHtmlBase
         {
             @$this->dom->loadHTML($html);
         }
-        $this->xpath = new DOMXPath($this->dom);
+        $this->xpath = new \DOMXPath($this->dom);
         //$this->root = new AHTMLNode($this->dom->documentElement, $this->doc);
         $this->root = $this->at('body');
     }
