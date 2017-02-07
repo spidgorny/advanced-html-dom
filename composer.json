@@ -1,11 +1,26 @@
 {
-  "name": "hrmatching/advanced_html_dom",
-  "type": "library",
-  "description": "",
+  "name": "deimos/advanced-html-dom",
+  "description": "Deimos Advanced HTML DOM.",
   "keywords": [
+    "advanced",
+    "html",
+    "dom",
+    "parser",
+    "css",
+    "selector"
   ],
+  "homepage": "https://github.com/DeimosProject/Advanced-HTML-DOM",
   "license": "MIT",
+  "type": "library",
   "require": {
-    "php": ">=5.4"
+    "php": "^5.6 || ^7.0"
+  },
+  "autoload": {
+    "classmap": [
+      "src/AdvancedHtmlDom/functions.php"
+    ],
+    "psr-4": {
+      "Deimos\\": "src/"
+    }
   }
 }
