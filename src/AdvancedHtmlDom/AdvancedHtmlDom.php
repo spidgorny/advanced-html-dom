@@ -18,7 +18,7 @@ class AdvancedHtmlDom extends AdvancedHtmlBase
 
     public function load($html, $is_xml = false)
     {
-        $this->dom = new DOMDocument();
+        $this->dom = new \DOMDocument();
         if ($is_xml)
         {
             @$this->dom->loadXML(preg_replace('/xmlns=".*?"/ ', '', $html));
