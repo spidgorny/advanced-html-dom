@@ -306,7 +306,7 @@ class AHTMLNodeList implements \Iterator, \Countable, \ArrayAccess
      */
     public function __set($name, $value)
     {
-        throw new \InvalidArgumentException();
+        throw new \InvalidArgumentException(__METHOD__);
     }
 
     /**

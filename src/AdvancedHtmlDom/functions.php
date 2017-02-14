@@ -55,8 +55,21 @@ define('ATTRIBUTES_REGEX', '/^(' . $attributes . '|data-\w+)e?s$/');
  * @param InterfaceCache $cache
  *
  * @return AdvancedHtmlDom
+ *
+ * @deprecated strGetHtml
  */
 function str_get_html($html, InterfaceCache $cache = null)
+{
+    return strGetHtml($html, $cache);
+}
+
+/**
+ * @param string         $html
+ * @param InterfaceCache $cache
+ *
+ * @return AdvancedHtmlDom
+ */
+function strGetHtml($html, InterfaceCache $cache = null)
 {
     $adv = new AdvancedHtmlDom($html);
 
@@ -73,6 +86,8 @@ function str_get_html($html, InterfaceCache $cache = null)
  * @param InterfaceCache $cache
  *
  * @return AdvancedHtmlDom
+ *
+ * @deprecated fileGetHtml
  */
 function file_get_html($url, InterfaceCache $cache = null)
 {
@@ -85,12 +100,48 @@ function file_get_html($url, InterfaceCache $cache = null)
 }
 
 /**
+ * @param string         $url
+ * @param InterfaceCache $cache
+ *
+ * @return AdvancedHtmlDom
+ */
+function fileGetHtml($url, InterfaceCache $cache = null)
+{
+    if ($cache)
+    {
+        return strGetHtml($cache->get($url));
+    }
+
+    return strGetHtml(file_get_contents($url));
+}
+
+/**
+ * @param string         $html
+ * @param InterfaceCache $cache
+ *
+ * @return AdvancedHtmlDom
+ *
+ * @deprecated strGetXml
+ */
+function str_get_xml($html, InterfaceCache $cache = null)
+{
+    $adv = new AdvancedHtmlDom($html, true);
+
+    if ($cache)
+    {
+        $adv->setCache($cache);
+    }
+
+    return $adv;
+}
+
+/**
  * @param string         $html
  * @param InterfaceCache $cache
  *
  * @return AdvancedHtmlDom
  */
-function str_get_xml($html, InterfaceCache $cache = null)
+function strGetXml($html, InterfaceCache $cache = null)
 {
     $adv = new AdvancedHtmlDom($html, true);
 
@@ -107,6 +158,8 @@ function str_get_xml($html, InterfaceCache $cache = null)
  * @param InterfaceCache $cache
  *
  * @return AdvancedHtmlDom
+ *
+ * @deprecated fileGetXml
  */
 function file_get_xml($url, InterfaceCache $cache = null)
 {
@@ -116,4 +169,22 @@ function file_get_xml($url, InterfaceCache $cache = null)
     }
 
     return str_get_xml(file_get_contents($url));
+}
+
+/**
+ * @param string         $url
+ * @param InterfaceCache $cache
+ *
+ * @return AdvancedHtmlDom
+ *
+ * @deprecated fileGetXml
+ */
+function fileGetXml($url, InterfaceCache $cache = null)
+{
+    if ($cache)
+    {
+        return strGetXml($cache->get($url));
+    }
+
+    return strGetXml(file_get_contents($url));
 }

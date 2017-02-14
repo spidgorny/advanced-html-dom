@@ -2,14 +2,34 @@
 
 include dirname(__DIR__) . '/vendor/autoload.php';
 
-$dom = new \Deimos\AdvancedHtmlDom\AdvancedHtmlDom();
-$dom->cache(new \Deimos\AdvancedHtmlDom\CacheSystem\CacheStatic());
+// test 1
+$mt = microtime(true);
 
-$dom->load_file('https://babichev.net/portfolio');
-$dom->load_file('https://babichev.net/portfolio');
-$dom->load_file('https://babichev.net/portfolio');
-$dom->load_file('https://babichev.net/portfolio');
-$dom->load_file('https://babichev.net/portfolio');
+$dom = new \Deimos\AdvancedHtmlDom\AdvancedHtmlDom();
+$dom->setCache(new \Deimos\AdvancedHtmlDom\CacheSystem\CacheStatic());
+
+$dom->loadFile('https://babichev.net/portfolio');
+$dom->loadFile('https://babichev.net/portfolio');
+$dom->loadFile('https://babichev.net/portfolio');
+$dom->loadFile('https://babichev.net/portfolio');
+$dom->loadFile('https://babichev.net/portfolio');
+
+$mt1 = microtime(true) - $mt;
+
+// test 2
+$mt = microtime(true);
+
+$dom = new \Deimos\AdvancedHtmlDom\AdvancedHtmlDom();
+
+$dom->loadFile('https://babichev.net/portfolio');
+$dom->loadFile('https://babichev.net/portfolio');
+$dom->loadFile('https://babichev.net/portfolio');
+$dom->loadFile('https://babichev.net/portfolio');
+$dom->loadFile('https://babichev.net/portfolio');
+
+$mt2 = microtime(true) - $mt;
+
+var_dump('about a caching quicker -- ' . ($mt1 < $mt2 ? 'yes' : 'no'), $mt1, $mt2);
 
 foreach ($dom->find('.lweel img') as $img)
 {

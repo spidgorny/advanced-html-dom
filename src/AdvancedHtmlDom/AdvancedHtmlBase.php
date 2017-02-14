@@ -98,7 +98,7 @@ class AdvancedHtmlBase
      */
     public function clean($str)
     {
-        return trim(preg_replace('/\s+/', ' ', $str));
+        return $this->trim(preg_replace('/\s+/', ' ', $str));
     }
 
     /**

@@ -83,10 +83,25 @@ class AdvancedHtmlDom extends AdvancedHtmlBase
     /**
      * @param      $file
      * @param bool $is_xml
+     *
+     * @deprecated loadFile
      */
     public function load_file($file, $is_xml = false)
     {
+        $this->loadFile($file, $is_xml);
+    }
+
+    /**
+     * @param string $file
+     * @param bool   $is_xml
+     *
+     * @return $this
+     */
+    public function loadFile($file, $is_xml = false)
+    {
         $this->load($this->cache($file), $is_xml);
+
+        return $this;
     }
 
     // special cases

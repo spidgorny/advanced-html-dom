@@ -181,19 +181,9 @@ class AHTMLNode extends AdvancedHtmlBase implements \ArrayAccess
 
                 return;
 
-            //default: trigger_error('Unknown property: ' . $key, E_USER_WARNING);
-            //case 'name': return $this->node->nodeName;
-        }
-        //trigger_error('Unknown property: ' . $key, E_USER_WARNING);
-        if ($value === null)
-        {
-            $this->node->removeAttribute($name);
-        }
-        else
-        {
-            $this->node->setAttribute($name, $value);
         }
 
+        $this->offsetSet($name, $value);
     }
 
     /**
@@ -225,11 +215,11 @@ class AHTMLNode extends AdvancedHtmlBase implements \ArrayAccess
         if ($value)
         {
             $this->node->setAttribute($key, $value);
+
+            return;
         }
-        else
-        {
-            $this->node->removeAttribute($key);
-        }
+
+        $this->node->removeAttribute($key);
         //trigger_error('offsetSet not implemented', E_USER_WARNING);
     }
 
