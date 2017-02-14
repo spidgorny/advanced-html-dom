@@ -112,7 +112,7 @@ function file_get_xml($url, InterfaceCache $cache = null)
 {
     if ($cache)
     {
-        return str_get_html($cache->get($url));
+        return str_get_xml($cache->get($url));
     }
 
     return str_get_xml(file_get_contents($url));
