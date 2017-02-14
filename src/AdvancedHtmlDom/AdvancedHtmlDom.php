@@ -3,7 +3,6 @@
 namespace Deimos\AdvancedHtmlDom;
 
 use Deimos\AdvancedHtmlDom\CacheSystem\InterfaceCache;
-use Deimos\AdvancedHtmlDom\CacheSystem\WithoutCache;
 
 class AdvancedHtmlDom extends AdvancedHtmlBase
 {
@@ -55,7 +54,7 @@ class AdvancedHtmlDom extends AdvancedHtmlBase
     {
         if (!$this->cache)
         {
-            $this->cache = new WithoutCache();
+            return file_get_contents($url);
         }
 
         return $this->cache->get($url);
