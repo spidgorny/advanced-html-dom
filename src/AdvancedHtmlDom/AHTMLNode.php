@@ -4,16 +4,31 @@ namespace Deimos\AdvancedHtmlDom;
 
 class AHTMLNode extends AdvancedHtmlBase implements \ArrayAccess
 {
+
+    /**
+     * @var
+     */
     private $_path;
 
+    /**
+     * AHTMLNode constructor.
+     *
+     * @param $node
+     * @param $doc
+     */
     public function __construct($node, $doc)
     {
         $this->node    = $node;
         $this->_path   = $node->getNodePath();
         $this->doc     = $doc;
-        $this->is_text = !!($node->nodeName === '#text');
+        $this->is_text = $node->nodeName === '#text';
     }
 
+    /**
+     * @param $html
+     *
+     * @return mixed
+     */
     private function get_fragment($html)
     {
         $dom = $this->doc->dom;
@@ -23,6 +38,11 @@ class AHTMLNode extends AdvancedHtmlBase implements \ArrayAccess
         return $fragment;
     }
 
+    /**
+     * @param $html
+     *
+     * @return AHTMLNode|null
+     */
     public function replace($html)
     {
         $node = empty($html) ? null : $this->before($html);
@@ -31,6 +51,11 @@ class AHTMLNode extends AdvancedHtmlBase implements \ArrayAccess
         return $node;
     }
 
+    /**
+     * @param $html
+     *
+     * @return AHTMLNode
+     */
     public function before($html)
     {
         $fragment = $this->get_fragment($html);
@@ -39,6 +64,9 @@ class AHTMLNode extends AdvancedHtmlBase implements \ArrayAccess
         return new AHTMLNode($this->node->previousSibling, $this->doc);
     }
 
+    /**
+     * @param $html
+     */
     public function after($html)
     {
         $fragment = $this->get_fragment($html);
@@ -52,13 +80,33 @@ class AHTMLNode extends AdvancedHtmlBase implements \ArrayAccess
         }
     }
 
+    /**
+     * @param $str
+     *
+     * @return mixed
+     */
     public function decamelize($str)
     {
-        $str = preg_replace('/(^|[a-z])([A-Z])/e', 'strtolower(strlen("\\1") ? "\\1_\\2" : "\\2")', $str);
+        $str = preg_replace_callback(
+            '/(^|[a-z])([A-Z])/',
+            function ($matches)
+            {
+                return
+                    strtolower(
+                        strlen($matches[1])
+                            ? $matches[1] . '_' . $matches[2] :
+                            $matches[2]
+                    );
+            },
+            $str
+        );
 
         return preg_replace('/ /', '_', strtolower($str));
     }
 
+    /**
+     * @return array
+     */
     public function attributes()
     {
         $ret = array();
@@ -70,16 +118,25 @@ class AHTMLNode extends AdvancedHtmlBase implements \ArrayAccess
         return $ret;
     }
 
+    /**
+     * @param null $key
+     * @param int  $level
+     *
+     * @return array
+     */
     public function flatten($key = null, $level = 1)
     {
+
         $children = $this->children;
         $ret      = array();
         $tag      = $this->tag;
+
         if ($this->at('./preceding-sibling::' . $this->tag) || $this->at('./following-sibling::' . $this->tag) || ($key = $this->tag . 's'))
         {
             $count = $this->search('./preceding-sibling::' . $this->tag)->length + 1;
             $tag .= '_' . $count;
         }
+
         if ($children->length == 0)
         {
             $ret[$this->decamelize(implode(' ', array_filter(array($key, $tag))))] = $this->text;
@@ -95,14 +152,13 @@ class AHTMLNode extends AdvancedHtmlBase implements \ArrayAccess
         return $ret;
     }
 
-    public function __isset($name)
+    /**
+     * @param $name
+     * @param $value
+     */
+    public function __set($name, $value)
     {
-        return true;
-    }
-
-    public function __set($key, $value)
-    {
-        switch ($key)
+        switch ($name)
         {
             case 'text':
             case 'innertext':
@@ -117,9 +173,9 @@ class AHTMLNode extends AdvancedHtmlBase implements \ArrayAccess
                 return;
             case 'tag':
                 $el = $this->replace('<' . $value . '>' . $this->innerhtml . '</' . $value . '>');
-                foreach ($this->node->attributes as $key => $att)
+                foreach ($this->node->attributes as $_name => $att)
                 {
-                    $el->$key = $att->nodeValue;
+                    $el->$_name = $att->nodeValue;
                 }
                 $this->node = $el->node;
 
@@ -131,25 +187,39 @@ class AHTMLNode extends AdvancedHtmlBase implements \ArrayAccess
         //trigger_error('Unknown property: ' . $key, E_USER_WARNING);
         if ($value === null)
         {
-            $this->node->removeAttribute($key);
+            $this->node->removeAttribute($name);
         }
         else
         {
-            $this->node->setAttribute($key, $value);
+            $this->node->setAttribute($name, $value);
         }
 
     }
 
+    /**
+     * @param mixed $offset
+     *
+     * @return bool
+     */
     public function offsetExists($offset)
     {
         return true;
     }
 
+    /**
+     * @param mixed $offset
+     *
+     * @return mixed
+     */
     public function offsetGet($offset)
     {
         return $this->node->getAttribute($offset);
     }
 
+    /**
+     * @param mixed $key
+     * @param mixed $value
+     */
     public function offsetSet($key, $value)
     {
         if ($value)
@@ -163,11 +233,17 @@ class AHTMLNode extends AdvancedHtmlBase implements \ArrayAccess
         //trigger_error('offsetSet not implemented', E_USER_WARNING);
     }
 
+    /**
+     * @param mixed $offset
+     */
     public function offsetUnset($offset)
     {
         trigger_error('offsetUnset not implemented', E_USER_WARNING);
     }
 
+    /**
+     * @return mixed
+     */
     public function title()
     {
         return $this->node->getAttribute('title');

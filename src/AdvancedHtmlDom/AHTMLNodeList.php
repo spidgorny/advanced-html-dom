@@ -4,10 +4,28 @@ namespace Deimos\AdvancedHtmlDom;
 
 class AHTMLNodeList implements \Iterator, \Countable, \ArrayAccess
 {
+
+    /**
+     * @var
+     */
     private $nodeList;
+
+    /**
+     * @var
+     */
     private $doc;
+
+    /**
+     * @var int
+     */
     private $counter = 0;
 
+    /**
+     * AHTMLNodeList constructor.
+     *
+     * @param $nodeList
+     * @param $doc
+     */
     public function __construct($nodeList, $doc)
     {
         $this->nodeList = $nodeList;
@@ -21,61 +39,102 @@ class AHTMLNodeList implements \Iterator, \Countable, \ArrayAccess
     abstract public void offsetUnset ( mixed $offset )
     */
 
+    /**
+     * @param mixed $offset
+     *
+     * @return bool
+     */
     public function offsetExists($offset)
     {
         return 0 <= $offset && $offset < $this->nodeList->length;
     }
 
+    /**
+     * @param mixed $offset
+     *
+     * @return AHTMLNode
+     */
     public function offsetGet($offset)
     {
         return new AHTMLNode($this->nodeList->item($offset), $this->doc);
     }
 
+    /**
+     * @param mixed $offset
+     * @param mixed $value
+     */
     public function offsetSet($offset, $value)
     {
         trigger_error('offsetSet not implemented', E_USER_WARNING);
     }
 
+    /**
+     * @param mixed $offset
+     */
     public function offsetUnset($offset)
     {
         trigger_error('offsetUnset not implemented', E_USER_WARNING);
     }
 
+    /**
+     * @return mixed
+     */
     public function count()
     {
         return $this->nodeList->length;
     }
 
+    /**
+     *
+     */
     public function rewind()
     {
         $this->counter = 0;
     }
 
+    /**
+     * @return AHTMLNode
+     */
     public function current()
     {
         return new AHTMLNode($this->nodeList->item($this->counter), $this->doc);
     }
 
+    /**
+     * @return int
+     */
     public function key()
     {
         return $this->counter;
     }
 
+    /**
+     *
+     */
     public function next()
     {
         $this->counter++;
     }
 
+    /**
+     * @return bool
+     */
     public function valid()
     {
         return $this->counter < $this->nodeList->length;
     }
 
+    /**
+     * @return AHTMLNode|null
+     */
     public function last()
     {
         return ($this->nodeList->length > 0) ? new AHTMLNode($this->nodeList->item($this->nodeList->length - 1), $this->doc) : null;
     }
 
+    /**
+     * @return $this
+     */
     public function remove()
     {
         foreach ($this as $node)
@@ -86,6 +145,11 @@ class AHTMLNodeList implements \Iterator, \Countable, \ArrayAccess
         return $this;
     }
 
+    /**
+     * @param $c
+     *
+     * @return array
+     */
     public function map($c)
     {
         $ret = array();
@@ -99,6 +163,12 @@ class AHTMLNodeList implements \Iterator, \Countable, \ArrayAccess
 
 
     //math methods
+    /**
+     * @param        $nl
+     * @param string $op
+     *
+     * @return AHTMLNodeList
+     */
     public function doMath($nl, $op = 'plus')
     {
         $paths       = array();
@@ -128,16 +198,31 @@ class AHTMLNodeList implements \Iterator, \Countable, \ArrayAccess
         return new AHTMLNodeList($this->doc->xpath->query(implode('|', $new_paths)), $this->doc);
     }
 
+    /**
+     * @param $nl
+     *
+     * @return AHTMLNodeList
+     */
     public function minus($nl)
     {
         return $this->doMath($nl, 'minus');
     }
 
+    /**
+     * @param $nl
+     *
+     * @return AHTMLNodeList
+     */
     public function plus($nl)
     {
         return $this->doMath($nl, 'plus');
     }
 
+    /**
+     * @param $nl
+     *
+     * @return AHTMLNodeList
+     */
     public function intersect($nl)
     {
         return $this->doMath($nl, 'intersect');
@@ -145,6 +230,12 @@ class AHTMLNodeList implements \Iterator, \Countable, \ArrayAccess
 
 
     // magic methods
+    /**
+     * @param $key
+     * @param $values
+     *
+     * @return array|string
+     */
     public function __call($key, $values)
     {
         $key = strtolower(str_replace('_', '', $key));
@@ -199,26 +290,46 @@ class AHTMLNodeList implements \Iterator, \Countable, \ArrayAccess
         return implode('', $retval);
     }
 
+    /**
+     * @param $key
+     *
+     * @return mixed
+     */
     public function __get($key)
     {
         return $this->$key();
     }
 
+    /**
+     * @param $name
+     * @param $value
+     */
     public function __set($name, $value)
     {
         throw new \InvalidArgumentException();
     }
 
+    /**
+     * @param $name
+     *
+     * @return bool
+     */
     public function __isset($name)
     {
         return true;
     }
 
+    /**
+     * @return string
+     */
     public function __toString()
     {
         return (string)$this->html();
     }
 
+    /**
+     * @return mixed
+     */
     public function length()
     {
         return $this->nodeList->length;

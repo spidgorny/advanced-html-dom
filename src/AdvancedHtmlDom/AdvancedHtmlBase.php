@@ -4,26 +4,54 @@ namespace Deimos\AdvancedHtmlDom;
 
 class AdvancedHtmlBase
 {
+
+    /**
+     * @var
+     */
     public $doc;
+
+    /**
+     * @var
+     */
     public $dom;
+
+    /**
+     * @var
+     */
     public $node;
+
+    /**
+     * @var bool
+     */
     public $is_text = false;
 
+    /**
+     * @return mixed
+     */
     public function text()
     {
         return $this->node->nodeValue;
     }
 
+    /**
+     * @return mixed
+     */
     public function html()
     {
         return $this->doc->dom->saveHTML($this->node);
     }
 
+    /**
+     * @return string
+     */
     public function __toString()
     {
-        return $this->html();
+        return (string)$this->html();
     }
 
+    /**
+     * @return $this
+     */
     public function remove()
     {
         $this->node->parentNode->removeChild($this->node);
@@ -31,11 +59,19 @@ class AdvancedHtmlBase
         return $this;
     }
 
+    /**
+     * @return Str
+     */
     public function str()
     {
         return new Str($this->text);
     }
 
+    /**
+     * @param $re
+     *
+     * @return bool
+     */
     public function match($re)
     {
         $str = new Str($this->text);
@@ -43,6 +79,11 @@ class AdvancedHtmlBase
         return $str->match($re);
     }
 
+    /**
+     * @param $re
+     *
+     * @return mixed
+     */
     public function scan($re)
     {
         $str = new Str($this->text);
@@ -50,41 +91,63 @@ class AdvancedHtmlBase
         return $str->scan($re);
     }
 
+    /**
+     * @param $str
+     *
+     * @return string
+     */
     public function clean($str)
     {
         return trim(preg_replace('/\s+/', ' ', $str));
     }
 
+    /**
+     * @param $str
+     *
+     * @return string
+     */
     public function trim($str)
     {
         return trim($str);
     }
 
+    /**
+     * @param      $css
+     * @param null $index
+     *
+     * @return AHTMLNode[]|AHTMLNodeList
+     */
     public function find($css, $index = null)
     {
         $xpath = CSS::xpath_for($css);
-        if (!isset($this->doc) || !isset($this->doc->xpath))
+
+        if (!isset($this->doc, $this->doc->xpath))
         {
             return null;
         }
+
         if (null === $index)
         {
             return new AHTMLNodeList($this->doc->xpath->query($xpath, $this->node), $this->doc);
         }
-        else
-        {
-            $nl = $this->doc->xpath->query($xpath, $this->node);
-            if ($index < 0)
-            {
-                $index = $nl->length + $index;
-            }
-            $node = $nl->item($index);
 
-            return $node ? new AHTMLNode($node, $this->doc) : null;
+        $nl = $this->doc->xpath->query($xpath, $this->node);
+        if ($index < 0)
+        {
+            $index = $nl->length + $index;
         }
+        $node = $nl->item($index);
+
+        return $node ? new AHTMLNode($node, $this->doc) : null;
     }
 
     // magic methods
+    /**
+     * @param $key
+     * @param $args
+     *
+     * @return AHTMLNode[]|AHTMLNodeList|null
+     */
     public function __call($key, $args)
     {
         $key = strtolower(str_replace('_', '', $key));
@@ -140,6 +203,7 @@ class AdvancedHtmlBase
             // attributes
             case 'hasattribute':
                 return !$this->is_text && $this->node->getAttribute($args[0]);
+
             case 'getattribute':
                 $arg = $args[0];
 
@@ -153,13 +217,6 @@ class AdvancedHtmlBase
                 $arg = $args[0];
 
                 return $this->$arg = null;
-            case 'getattribute':
-                return $this->node->getAttribute($args[0]);
-            case 'setattribute':
-                return $this->$args[0] = $args[1];
-            case 'removeattribute':
-                return $this->$args[0] = null;
-
 
             // wrap
             case 'wrap':
@@ -205,8 +262,7 @@ class AdvancedHtmlBase
 
         if (preg_match('/(clean|trim|str)(.*)/', $key, $m) && isset($m[2]))
         {
-            $arg1 = $m[1];
-            $arg2 = $m[2];
+            list($arg0, $arg1, $arg2) = $m;
 
             return $this->$arg1($this->$arg2);
         }
@@ -223,8 +279,32 @@ class AdvancedHtmlBase
         return $this->node->getAttribute($key);
     }
 
+    /**
+     * @param $key
+     *
+     * @return mixed
+     */
     public function __get($key)
     {
         return $this->$key();
+    }
+
+    /**
+     * @param $name
+     * @param $value
+     */
+    public function __set($name, $value)
+    {
+        throw new \InvalidArgumentException(__METHOD__);
+    }
+
+    /**
+     * @param $name
+     *
+     * @return bool
+     */
+    public function __isset($name)
+    {
+        return true;
     }
 }

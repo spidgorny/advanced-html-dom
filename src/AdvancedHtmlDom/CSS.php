@@ -4,11 +4,21 @@ namespace Deimos\AdvancedHtmlDom;
 
 class CSS
 {
+    /**
+     * @param $str
+     *
+     * @return int
+     */
     private static function is_xpath($str)
     {
         return preg_match('/^\.?\//', $str);
     }
 
+    /**
+     * @param $str
+     *
+     * @return string
+     */
     public static function do_id($str)
     {
         if (!preg_match('/^#(.*)/', $str, $m))
@@ -16,9 +26,14 @@ class CSS
             die('no attribute match!');
         }
 
-        return "@id = '" . $m[1] . "'";
+        return "@id = '" . $m[1] . '\'';
     }
 
+    /**
+     * @param $str
+     *
+     * @return string
+     */
     public static function do_class($str)
     {
         if (!preg_match('/^\.(.*)/', $str, $m))
@@ -29,92 +44,127 @@ class CSS
         return "contains(concat(' ', normalize-space(@class), ' '), ' " . $m[1] . " ')";
     }
 
+    /**
+     * @param $str
+     *
+     * @return array
+     */
     private static function parse_nth($str)
     {
         switch (true)
         {
+
             case preg_match('/^(-?\d+)(?:n\+(\d+))$/', $str, $m):
-                return array(intval($m[1]), intval($m[2]));
-            case preg_match('/^(-?\d+)(?:n\+(\d+))$/', $str, $m):
-                return array(intval($m[1]), intval($m[2]));
+                return array((int)$m[1], (int)$m[2]);
+
             case preg_match('/^n\+(\d+)$/', $str, $m):
-                return array(1, intval($m[1]));
+                return array(1, (int)$m[1]);
+
             case preg_match('/^-n\+(\d+)$/', $str, $m):
-                return array(-1, intval($m[1]));
+                return array(-1, (int)$m[1]);
+
             case preg_match('/^(\d+)n$/', $str, $m):
-                return array(intval($m[1]), 0);
+                return array((int)$m[1], 0);
+
             case preg_match('/^even$/', $str, $m):
                 return self::parse_nth('2n+0');
+
             case preg_match('/^odd$/', $str, $m):
                 return self::parse_nth('2n+1');
+
             case preg_match('/^(-?\d+)$/', $str, $m):
-                return array(null, intval($m[1]));;
+                return array(null, (int)$m[1]);
+
             default:
                 die('no match: ' . $str);
         }
     }
 
+    /**
+     * @param      $str
+     * @param bool $last
+     *
+     * @return string
+     */
     private static function nth($str, $last = false)
     {
         list($a, $b) = self::parse_nth($str);
         //echo $a . ":" . $b . "\n";
-        $tokens = array();
+        $tokens = [];
+
         if ($last)
         {
             if ($a === null)
             {
-                return "position() = last() - " . ($b - 1);
+                return 'position() = last() - ' . ($b - 1);
             }
+
             if ($b > 0 && $a >= 0)
             {
-                $tokens[] = "((last()-position()+1) >= " . $b . ")";
+                $tokens[] = '((last()-position()+1) >= ' . $b . ')';
             }
+
             if ($b > 0 && $a < 0)
             {
-                $tokens[] = "((last()-position()+1) <= " . $b . ")";
+                $tokens[] = '((last()-position()+1) <= ' . $b . ')';
             }
+
             if ($a != 0 && $b != 0)
             {
-                $tokens[] = "((((last()-position()+1)-" . $b . ") mod " . abs($a) . ") = 0)";
+                $tokens[] = '((((last()-position()+1)-' . $b . ') mod ' . abs($a) . ') = 0)';
             }
+
             if ($a != 0 && $b == 0)
             {
-                $tokens[] = "((last()-position()+1) mod " . abs($a) . ") = 0";
+                $tokens[] = '((last()-position()+1) mod ' . abs($a) . ') = 0';
             }
+
         }
         else
         {
+
             if ($a === null)
             {
-                return "position() = " . $b;
+                return 'position() = ' . $b;
             }
+
             if ($b > 0 && $a >= 0)
             {
-                $tokens[] = "(position() >= " . $b . ")";
+                $tokens[] = '(position() >= ' . $b . ')';
             }
+
             if ($b > 0 && $a < 0)
             {
-                $tokens[] = "(position() <= " . $b . ")";
+                $tokens[] = '(position() <= ' . $b . ')';
             }
+
             if ($a != 0 && $b != 0)
             {
-                $tokens[] = "(((position()-" . $b . ") mod " . abs($a) . ") = 0)";
+                $tokens[] = '(((position()-' . $b . ') mod ' . abs($a) . ') = 0)';
             }
+
             if ($a != 0 && $b == 0)
             {
-                $tokens[] = "(position() mod " . abs($a) . ") = 0";
+                $tokens[] = '(position() mod ' . abs($a) . ') = 0';
             }
+
         }
 
         return implode(' and ', $tokens);
     }
 
     // This stuff is wrong, I need to look at this some more.
+    /**
+     * @param      $str
+     * @param bool $last
+     *
+     * @return string
+     */
     private static function nth_child($str, $last = false)
     {
         list($a, $b) = self::parse_nth($str);
         //echo $a . ":" . $b . "\n";
-        $tokens = array();
+        $tokens = [];
         if ($last)
         {
             if ($a === null)
@@ -165,6 +215,11 @@ class CSS
         return implode(' and ', $tokens);
     }
 
+    /**
+     * @param $str
+     *
+     * @return string
+     */
     private static function not($str)
     {
         switch (true)
@@ -183,6 +238,12 @@ class CSS
     }
 
 
+    /**
+     * @param $str
+     * @param $name
+     *
+     * @return string
+     */
     static function do_pseudo($str, $name)
     {
         if (!preg_match('/^:([\w-]+)(?:\((.*)\))?$/', $str, $m))
@@ -204,66 +265,71 @@ class CSS
         switch ($pseudo)
         {
             case 'last':
-                return "[position() = last()]";
+                return '[position() = last()]';
             case 'first':
-                return "[position() = 1]";
+                return '[position() = 1]';
             case 'parent':
-                return "[node()]";
+                return '[node()]';
             case 'contains':
-                return "[contains(., " . $value . ")]";
+                return '[contains(., ' . $value . ')]';
             case 'nth':
-                return "[position() = " . $value . "]";
+                return '[position() = ' . $value . ']';
             case 'gt':
-                return "[position() > " . $value . "]";
+                return '[position() > ' . $value . ']';
             case 'lt':
-                return "[position() < " . $value . "]";
+                return '[position() < ' . $value . ']';
             case 'eq':
-                return "[position() = " . $value . "]";
+                return '[position() = ' . $value . ']';
             case 'root':
-                return "[not(parent::*)]";
-#      case 'nth-child': return "[count(preceding-sibling::*) = " . ($value - 1) . "]";
+                return '[not(parent::*)]';
+#      case 'nth-child': return '[count(preceding-sibling::*) = ' . ($value - 1) . ']';
             case 'nth-child':
-                return "[" . self::nth_child($value) . "]";
-#      case 'nth-last-child': return "[count(following-sibling::*) = " . ($value - 1) . "]";
+                return '[' . self::nth_child($value) . ']';
+#      case 'nth-last-child': return '[count(following-sibling::*) = ' . ($value - 1) . ']';
             case 'nth-last-child':
-                return "[" . self::nth_child($value, true) . "]";
-#      case 'nth-of-type': return "[position() = " . $value . "]";
+                return '[' . self::nth_child($value, true) . ']';
+#      case 'nth-of-type': return '[position() = ' . $value . ']';
             case 'nth-of-type':
-                return "[" . self::nth($value) . "]";
-#      case 'nth-last-of-type': return $value ? "[position() = last() - " . ($value - 1) . "]" : "[position() = last()";
+                return '[' . self::nth($value) . ']';
+#      case 'nth-last-of-type': return $value ? '[position() = last() - ' . ($value - 1) . ']' : '[position() = last()';
             case 'nth-last-of-type':
-                return "[" . self::nth($value, true) . "]";
+                return '[' . self::nth($value, true) . ']';
             case 'first-child':
-                return "[count(preceding-sibling::*) = 0]";
+                return '[count(preceding-sibling::*) = 0]';
             case 'first-of-type':
-                return "[position() = 1]";
+                return '[position() = 1]';
             case 'last-child':
-                return "[count(following-sibling::*) = 0]";
+                return '[count(following-sibling::*) = 0]';
             case 'last-of-type':
-                return "[position() = last()]";
+                return '[position() = last()]';
             case 'only-child':
-                return "[count(preceding-sibling::*) = 0 and count(following-sibling::*) = 0]";
+                return '[count(preceding-sibling::*) = 0 and count(following-sibling::*) = 0]';
             case 'only-of-type':
-                return "[last() = 1]";
+                return '[last() = 1]';
             case 'empty':
-                return "[not(node())]";
+                return '[not(node())]';
             case 'not':
-                return "[not(" . self::not($value) . ")]";
-#      case 'has': return "[" . $inner . "]";
+                return '[not(' . self::not($value) . ')]';
+#      case 'has': return '[' . $inner . ']';
             case 'has':
-                return "[" . $inner . "]";
-            //      case 'link': return "[link(.)]";
+                return '[' . $inner . ']';
+            //      case 'link': return '[link(.)]';
             case 'link':
             case 'visited':
             case 'hover':
             case 'active':
-                return "[" . $pseudo . "(.)]";
+                return '[' . $pseudo . '(.)]';
 
             default:
                 die('unknown pseudo element: ' . $str);
         }
     }
 
+    /**
+     * @param $str
+     *
+     * @return string
+     */
     public static function do_braces($str)
     {
         $re = '/("(?>[^"]|(?R))*\)"|\'(?>[^\']|(?R))*\'|[~^$*|]?=)\s*/';
@@ -318,6 +384,11 @@ class CSS
         }
     }
 
+    /**
+     * @param $str
+     *
+     * @return string
+     */
     public static function translate_nav($str)
     {
         switch ($str)
@@ -333,6 +404,12 @@ class CSS
         }
     }
 
+    /**
+     * @param        $str
+     * @param string $last_nav
+     *
+     * @return string
+     */
     public static function translate_part($str, $last_nav = '')
     {
         $str    = preg_replace('/:contains\(([^()]*)\)/', '[text*=\\1]', $str); // quick and dirty contains fix
@@ -368,6 +445,11 @@ class CSS
         //return $name . implode('', $retval);
     }
 
+    /**
+     * @param $str
+     *
+     * @return string
+     */
     public static function translate($str)
     {
         $retval = array();
@@ -421,6 +503,11 @@ class CSS
         return '.' . self::translate_nav($first_nav) . implode('', $retval);
     }
 
+    /**
+     * @param $str
+     *
+     * @return array
+     */
     private static function get_expressions($str)
     {
         $retval = array();
@@ -443,6 +530,11 @@ class CSS
         return $retval;
     }
 
+    /**
+     * @param $str
+     *
+     * @return mixed|string
+     */
     public static function xpath_for($str)
     {
         if (self::is_xpath($str))
