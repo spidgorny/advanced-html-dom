@@ -1,6 +1,6 @@
 <?php
 
-namespace Deimos\AdvancedHtmlDom\CacheSystem;
+namespace Bavix\AdvancedHtmlDom\CacheSystem;
 
 class CacheStatic implements InterfaceCache
 {
