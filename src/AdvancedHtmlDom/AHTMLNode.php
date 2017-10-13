@@ -1,6 +1,6 @@
 <?php
 
-namespace Deimos\AdvancedHtmlDom;
+namespace Bavix\AdvancedHtmlDom;
 
 class AHTMLNode extends AdvancedHtmlBase implements \ArrayAccess
 {
