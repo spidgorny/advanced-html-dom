@@ -1,8 +1,8 @@
 <?php
 
-namespace Deimos\AdvancedHtmlDom;
+namespace Bavix\AdvancedHtmlDom;
 
-use Deimos\AdvancedHtmlDom\CacheSystem\InterfaceCache;
+use Bavix\AdvancedHtmlDom\CacheSystem\InterfaceCache;
 
 $attributes = array(
     'href', 'src', 'id', 'class', 'name',
