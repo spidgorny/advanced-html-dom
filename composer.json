@@ -1,6 +1,6 @@
 {
-  "name": "deimos/advanced-html-dom",
-  "description": "Deimos Advanced HTML DOM.",
+  "name": "bavix/advanced-html-dom",
+  "description": "Bavix Advanced HTML DOM.",
   "keywords": [
     "advanced",
     "html",
@@ -9,7 +9,7 @@
     "css",
     "selector"
   ],
-  "homepage": "https://github.com/DeimosProject/Advanced-HTML-DOM",
+  "homepage": "https://github.com/bavix/advanced-html-dom",
   "license": "MIT",
   "type": "library",
   "require": {
@@ -22,7 +22,7 @@
       "src/AdvancedHtmlDom/functions.php"
     ],
     "psr-4": {
-      "Deimos\\": "src/"
+      "Bavix\\": "src/"
     }
   }
 }
