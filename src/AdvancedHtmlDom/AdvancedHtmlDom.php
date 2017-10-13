@@ -1,8 +1,8 @@
 <?php
 
-namespace Deimos\AdvancedHtmlDom;
+namespace Bavix\AdvancedHtmlDom;
 
-use Deimos\AdvancedHtmlDom\CacheSystem\InterfaceCache;
+use Bavix\AdvancedHtmlDom\CacheSystem\InterfaceCache;
 
 class AdvancedHtmlDom extends AdvancedHtmlBase
 {
