@@ -89,12 +89,11 @@ class AHTMLNode extends AdvancedHtmlBase implements \ArrayAccess
     {
         $str = \preg_replace_callback(
             '/(^|[a-z])([A-Z])/',
-            function ($matches) {
+            function($matches) {
                 return
                     \strtolower(
                         \strlen($matches[1])
-                            ? $matches[1] . '_' . $matches[2] :
-                            $matches[2]
+                            ? $matches[1] . '_' . $matches[2] : $matches[2]
                     );
             },
             $str
@@ -133,7 +132,7 @@ class AHTMLNode extends AdvancedHtmlBase implements \ArrayAccess
         if ($this->at('./preceding-sibling::' . $this->tag) || $this->at('./following-sibling::' . $this->tag) || ($key = $this->tag . 's'))
         {
             $count = $this->search('./preceding-sibling::' . $this->tag)->length + 1;
-            $tag   .= '_' . $count;
+            $tag .= '_' . $count;
         }
 
         if ($children->length == 0)
