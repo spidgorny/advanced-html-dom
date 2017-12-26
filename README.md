@@ -1,4 +1,20 @@
-Update: I tested this library with php 7.0.1 - 7.0.5 as well as PHP 5.3 and up, everything seems to be working.
+# Advanced HTML DOM
+
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/bavix/advanced-html-dom/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/bavix/advanced-html-dom/?branch=master)
+[![Code Coverage](https://scrutinizer-ci.com/g/bavix/advanced-html-dom/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/bavix/advanced-html-dom/?branch=master)
+[![Build Status](https://scrutinizer-ci.com/g/bavix/advanced-html-dom/badges/build.png?b=master)](https://scrutinizer-ci.com/g/bavix/advanced-html-dom/build-status/master)
+[![Code Intelligence Status](https://scrutinizer-ci.com/g/bavix/advanced-html-dom/badges/code-intelligence.svg?b=master)](https://scrutinizer-ci.com/code-intelligence)
+
+[![Latest Stable Version](https://poser.pugx.org/bavix/advanced-html-dom/v/stable)](https://packagist.org/packages/bavix/advanced-html-dom)
+[![Latest Unstable Version](https://poser.pugx.org/bavix/advanced-html-dom/v/unstable)](https://packagist.org/packages/bavix/advanced-html-dom)
+[![License](https://poser.pugx.org/bavix/advanced-html-dom/license)](https://packagist.org/packages/bavix/advanced-html-dom)
+[![composer.lock](https://poser.pugx.org/bavix/advanced-html-dom/composerlock)](https://packagist.org/packages/bavix/advanced-html-dom)
+
+* **Vendor**: bavix
+* **Package**: Advanced HTML DOM
+* **Version**: [![Latest Stable Version](https://poser.pugx.org/bavix/advanced-html-dom/v/stable)](https://packagist.org/packages/bavix/advanced-html-dom)
+* **PHP Version**: 7.1+ 
+* **[Composer](https://getcomposer.org/):** `composer require bavix/advanced-html-dom`
 
 The goal of this project is to be a DOM-based drop-in replacement for PHP's simple html dom library.
 
@@ -10,12 +26,3 @@ The goal of this project is to be a DOM-based drop-in replacement for PHP's simp
 - 10x-20x Performance increase
 - Reduced memory requirement
 - Support for many more css selectors
-
-Features
-* Supports full set of css pseudo selectors plus many jquery extras: :not, :has, :contains, :gt, :lt, :eq
-* Use with css or xpath: $doc->find('h3 a'), $doc->find('//h3//a')
-* Jquery-style functions replace, wrap, unwrap, before after
-* Nodeset math: $doc->find('a')->minus($doc->find('.skip_me'))
-* Lots more features that haven't been documented yet.
-
-If you love Advanced HTML Dom please [vote for it](http://stackoverflow.com/questions/3577641/how-do-you-parse-and-process-html-xml-in-php) here!
