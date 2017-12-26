@@ -3,9 +3,29 @@
 namespace Tests\AdvancedHtmlDom;
 
 use Tests\Unit;
+use function Bavix\AdvancedHtmlDom\strGetHtml;
+use function Bavix\AdvancedHtmlDom\fileGetHtml;
 
 class BaseTest extends Unit
 {
+
+    public function testHelpers()
+    {
+        $file = fileGetHtml(
+            $this->partial('base.simple')
+        );
+
+        $str = strGetHtml(
+            \file_get_contents(
+                $this->partial('base.simple')
+            )
+        );
+
+        $this->assertSame(
+            $file->html(),
+            $str->html()
+        );
+    }
 
     public function testSimple()
     {
@@ -17,7 +37,7 @@ class BaseTest extends Unit
 
         $this->assertSame(
             $outs[0],
-            (string)$this->dom->find('.hello:contains(\'' . $outs[1] . '\')')
+            (string)$this->dom->find('h1:contains(\'' . $outs[1] . '\')')
         );
 
         $this->assertSame(
@@ -48,9 +68,26 @@ class BaseTest extends Unit
         );
 
         $this->assertSame(
-            (string)$this->dom->find('.hello'),
-            (string)$this->dom->find('.world')
+            (string)$this->dom->find('.h'),
+            (string)$this->dom->find('.w')
         );
+    }
+
+    public function testUl()
+    {
+        $this->dom->loadFile(
+            $this->partial('base.simple')
+        );
+
+        $ul = $this->dom->find('ul');
+
+//        var_dump($ul->());die;
+
+//        foreach ($li as $item)
+//        {
+//
+//        }
+
     }
 
 }

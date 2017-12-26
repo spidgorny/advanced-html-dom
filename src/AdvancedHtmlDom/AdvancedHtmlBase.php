@@ -115,7 +115,7 @@ class AdvancedHtmlBase
      * @param      $css
      * @param null $index
      *
-     * @return AHTMLNode|AHTMLNodeList
+     * @return array|AHTMLNode|AHTMLNodeList
      */
     public function find($css, $index = null)
     {
