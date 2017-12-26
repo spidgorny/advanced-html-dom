@@ -69,11 +69,11 @@ class AdvancedHtmlDom extends AdvancedHtmlBase
         $this->dom = new \DOMDocument();
         if ($is_xml)
         {
-            @$this->dom->loadXML(\preg_replace('/xmlns=".*?"/ ', '', $html));
+            $this->dom->loadXML(\preg_replace('/xmlns=".*?"/ ', '', $html));
         }
         else
         {
-            @$this->dom->loadHTML($html);
+            $this->dom->loadHTML($html);
         }
         $this->xpath = new \DOMXPath($this->dom);
         //$this->root = new AHTMLNode($this->dom->documentElement, $this->doc);
