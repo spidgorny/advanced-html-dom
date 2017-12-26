@@ -54,7 +54,7 @@ class AdvancedHtmlDom extends AdvancedHtmlBase
     {
         if (!$this->cache)
         {
-            return file_get_contents($url);
+            return \file_get_contents($url);
         }
 
         return $this->cache->get($url);
@@ -69,7 +69,7 @@ class AdvancedHtmlDom extends AdvancedHtmlBase
         $this->dom = new \DOMDocument();
         if ($is_xml)
         {
-            @$this->dom->loadXML(preg_replace('/xmlns=".*?"/ ', '', $html));
+            @$this->dom->loadXML(\preg_replace('/xmlns=".*?"/ ', '', $html));
         }
         else
         {
@@ -105,6 +105,7 @@ class AdvancedHtmlDom extends AdvancedHtmlBase
     }
 
     // special cases
+
     /**
      * @return mixed
      */

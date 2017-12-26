@@ -65,7 +65,7 @@ class AHTMLNodeList implements \Iterator, \Countable, \ArrayAccess
      */
     public function offsetSet($offset, $value)
     {
-        trigger_error('offsetSet not implemented', E_USER_WARNING);
+        \trigger_error('offsetSet not implemented', E_USER_WARNING);
     }
 
     /**
@@ -73,7 +73,7 @@ class AHTMLNodeList implements \Iterator, \Countable, \ArrayAccess
      */
     public function offsetUnset($offset)
     {
-        trigger_error('offsetUnset not implemented', E_USER_WARNING);
+        \trigger_error('offsetUnset not implemented', E_USER_WARNING);
     }
 
     /**
@@ -121,7 +121,7 @@ class AHTMLNodeList implements \Iterator, \Countable, \ArrayAccess
      */
     public function valid()
     {
-        return $this->counter < $this->nodeList->length;
+        return $this->nodeList && $this->counter < $this->nodeList->length;
     }
 
     /**
@@ -163,6 +163,7 @@ class AHTMLNodeList implements \Iterator, \Countable, \ArrayAccess
 
 
     //math methods
+
     /**
      * @param        $nl
      * @param string $op
@@ -185,13 +186,13 @@ class AHTMLNodeList implements \Iterator, \Countable, \ArrayAccess
         switch ($op)
         {
             case 'plus':
-                $new_paths = array_unique(array_merge($paths, $other_paths));
+                $new_paths = \array_unique(\array_merge($paths, $other_paths));
                 break;
             case 'minus':
-                $new_paths = array_diff($paths, $other_paths);
+                $new_paths = \array_diff($paths, $other_paths);
                 break;
             case 'intersect':
-                $new_paths = array_intersect($paths, $other_paths);
+                $new_paths = \array_intersect($paths, $other_paths);
                 break;
         }
 
@@ -230,6 +231,7 @@ class AHTMLNodeList implements \Iterator, \Countable, \ArrayAccess
 
 
     // magic methods
+
     /**
      * @param $key
      * @param $values
@@ -238,7 +240,7 @@ class AHTMLNodeList implements \Iterator, \Countable, \ArrayAccess
      */
     public function __call($key, $values)
     {
-        $key = strtolower(str_replace('_', '', $key));
+        $key = \strtolower(\str_replace('_', '', $key));
         switch ($key)
         {
             case 'to_a':
@@ -259,7 +261,7 @@ class AHTMLNodeList implements \Iterator, \Countable, \ArrayAccess
             if(preg_match(TAG_REGEX, $key, $m)) return $this->find($m[1], 0);
         */
 
-        if (preg_match(ATTRIBUTES_REGEX, $key, $m) || preg_match('/^((clean|trim|str).*)s$/', $key, $m))
+        if (\preg_match(ATTRIBUTES_REGEX, $key, $m) || \preg_match('/^((clean|trim|str).*)s$/', $key, $m))
         {
             foreach ($this as $node)
             {
@@ -270,7 +272,7 @@ class AHTMLNodeList implements \Iterator, \Countable, \ArrayAccess
             return $retval;
         }
 
-        if (preg_match(ATTRIBUTE_REGEX, $key, $m))
+        if (\preg_match(ATTRIBUTE_REGEX, $key, $m))
         {
             foreach ($this as $node)
             {
@@ -278,7 +280,7 @@ class AHTMLNodeList implements \Iterator, \Countable, \ArrayAccess
                 $retval[] = $node->$arg;
             }
 
-            return implode('', $retval);
+            return \implode('', $retval);
         }
 
         // what now?
@@ -287,7 +289,7 @@ class AHTMLNodeList implements \Iterator, \Countable, \ArrayAccess
             $retval[] = isset($values[0]) ? $node->$key($values[0]) : $node->$key();
         }
 
-        return implode('', $retval);
+        return \implode('', $retval);
     }
 
     /**

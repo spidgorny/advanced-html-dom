@@ -11,7 +11,7 @@ class CSS
      */
     private static function is_xpath($str)
     {
-        return preg_match('/^\.?\//', $str);
+        return \preg_match('/^\.?\//', $str);
     }
 
     /**
@@ -21,7 +21,7 @@ class CSS
      */
     public static function do_id($str)
     {
-        if (!preg_match('/^#(.*)/', $str, $m))
+        if (!\preg_match('/^#(.*)/', $str, $m))
         {
             die('no attribute match!');
         }
@@ -36,7 +36,7 @@ class CSS
      */
     public static function do_class($str)
     {
-        if (!preg_match('/^\.(.*)/', $str, $m))
+        if (!\preg_match('/^\.(.*)/', $str, $m))
         {
             die('no attribute match!');
         }
@@ -54,25 +54,25 @@ class CSS
         switch (true)
         {
 
-            case preg_match('/^(-?\d+)(?:n\+(\d+))$/', $str, $m):
+            case \preg_match('/^(-?\d+)(?:n\+(\d+))$/', $str, $m):
                 return array((int)$m[1], (int)$m[2]);
 
-            case preg_match('/^n\+(\d+)$/', $str, $m):
+            case \preg_match('/^n\+(\d+)$/', $str, $m):
                 return array(1, (int)$m[1]);
 
-            case preg_match('/^-n\+(\d+)$/', $str, $m):
+            case \preg_match('/^-n\+(\d+)$/', $str, $m):
                 return array(-1, (int)$m[1]);
 
-            case preg_match('/^(\d+)n$/', $str, $m):
+            case \preg_match('/^(\d+)n$/', $str, $m):
                 return array((int)$m[1], 0);
 
-            case preg_match('/^even$/', $str, $m):
+            case \preg_match('/^even$/', $str, $m):
                 return self::parse_nth('2n+0');
 
-            case preg_match('/^odd$/', $str, $m):
+            case \preg_match('/^odd$/', $str, $m):
                 return self::parse_nth('2n+1');
 
-            case preg_match('/^(-?\d+)$/', $str, $m):
+            case \preg_match('/^(-?\d+)$/', $str, $m):
                 return array(null, (int)$m[1]);
 
             default:
@@ -150,10 +150,11 @@ class CSS
 
         }
 
-        return implode(' and ', $tokens);
+        return \implode(' and ', $tokens);
     }
 
     // This stuff is wrong, I need to look at this some more.
+
     /**
      * @param      $str
      * @param bool $last
@@ -212,7 +213,7 @@ class CSS
             }
         }
 
-        return implode(' and ', $tokens);
+        return \implode(' and ', $tokens);
     }
 
     /**
@@ -224,13 +225,13 @@ class CSS
     {
         switch (true)
         {
-            case preg_match('/^\.(\w+)$/', $str, $m):
+            case \preg_match('/^\.(\w+)$/', $str, $m):
                 return self::do_class($str);
-            case preg_match('/^\#(\w+)$/', $str, $m):
+            case \preg_match('/^\#(\w+)$/', $str, $m):
                 return self::do_id($str);
-            case preg_match('/^(\w+)$/', $str, $m):
+            case \preg_match('/^(\w+)$/', $str, $m):
                 return "self::" . $str;
-            case preg_match('/^\[(.*)\]$/', $str, $m):
+            case \preg_match('/^\[(.*)\]$/', $str, $m):
                 return substr(self::do_braces($str), 1, -1);
             default:
                 return self::translate($str);
@@ -244,9 +245,9 @@ class CSS
      *
      * @return string
      */
-    static function do_pseudo($str, $name)
+    public static function do_pseudo($str, $name)
     {
-        if (!preg_match('/^:([\w-]+)(?:\((.*)\))?$/', $str, $m))
+        if (!\preg_match('/^:([\w-]+)(?:\((.*)\))?$/', $str, $m))
         {
             die('no attribute match!');
         }
@@ -334,15 +335,15 @@ class CSS
     {
         $re = '/("(?>[^"]|(?R))*\)"|\'(?>[^\']|(?R))*\'|[~^$*|]?=)\s*/';
 
-        $tokens = preg_split($re, substr($str, 1, strlen($str) - 2), 0, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY);
+        $tokens = \preg_split($re, \substr($str, 1, \strlen($str) - 2), 0, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY);
 //    var_dump($tokens);
-        $attr = trim(array_shift($tokens));
+        $attr = \trim(\array_shift($tokens));
 //     && )
-        if (!$op = @trim(array_shift($tokens)))
+        if (!$op = @\trim(\array_shift($tokens)))
         {
             switch (true)
             {
-                case preg_match('/^\d+$/', $attr):
+                case \preg_match('/^\d+$/', $attr):
                     return "[count(preceding-sibling::*) = " . ($attr - 1) . "]"; // [2] -> [count(preceding-sibling::*) = 1]
                 default:
                     return "[@" . $attr . "]"; // [foo] => [@foo]
@@ -350,16 +351,16 @@ class CSS
         }
         switch (true)
         {
-            case preg_match('/^(text|comment)$/', $attr, $m):
+            case \preg_match('/^(text|comment)$/', $attr, $m):
                 $attr = $m[1] . "()";
                 break;
-            case !preg_match('/[@(]/', $attr):
+            case !\preg_match('/[@(]/', $attr):
                 $attr = '@' . $attr;
                 break;
         }
 //    if(!preg_match('/[@(]/', $attr)) $attr = '@' . $attr;
-        $value = @trim(array_shift($tokens));
-        if (!preg_match('/^["\'].*["\']$/', $value))
+        $value = @\trim(\array_shift($tokens));
+        if (!\preg_match('/^["\'].*["\']$/', $value))
         {
             $value = "'" . $value . "'";
         }
@@ -412,36 +413,40 @@ class CSS
      */
     public static function translate_part($str, $last_nav = '')
     {
-        $str    = preg_replace('/:contains\(([^()]*)\)/', '[text*=\\1]', $str); // quick and dirty contains fix
+        $str    = \preg_replace('/:contains\(([^()]*)\)/', '[text*=\\1]', $str); // quick and dirty contains fix
         $retval = array();
         $re     = '/(:(?:nth-last-child|nth-of-type|nth-last-of-type|first-child|last-child|first-of-type|last-of-type|only-child|only-of-type|nth-child|first|last|gt|lt|eq|root|nth|empty|not|has|contains|parent|link|visited|hover|active)(?:\((?>[^()]|(?R))*\))?|\[(?>[^\[\]]|(?R))*\]|[#.][\w-]+)/';
         $name   = '*';
-        foreach (preg_split($re, $str, 0, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY) as $token)
+        foreach (\preg_split($re, $str, 0, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY) as $token)
         {
             switch (true)
             {
-                case preg_match('/^:/', $token):
+                case 0 === \strpos($token, ':'):
+//                case preg_match('/^:/', $token):
                     $retval[] = self::do_pseudo($token, $name);
                     break;
-                case preg_match('/^\[/', $token):
+                case 0 === \strpos($token, '['):
+//                case preg_match('/^\[/', $token):
                     $retval[] = self::do_braces($token);
                     break;
-                case preg_match('/^#/', $token):
+                case 0 === \strpos($token, '#'):
+//                case preg_match('/^#/', $token):
                     $retval[] = "[" . self::do_id($token) . "]";
                     break;
-                case preg_match('/^\./', $token):
+                case 0 === \strpos($token, '.'):
+//                case preg_match('/^\./', $token):
                     $retval[] = "[" . self::do_class($token) . "]";
                     break;
                 default:
                     $name = $token;
             }
         }
-        if (in_array($name, array('text', 'comment')))
+        if (\in_array($name, array('text', 'comment')))
         {
             $name .= '()';
         }
 
-        return ($last_nav === '+' ? "*[1]/self::" : '') . $name . implode('', $retval);
+        return ($last_nav === '+' ? "*[1]/self::" : '') . $name . \implode('', $retval);
         //return $name . implode('', $retval);
     }
 
@@ -459,9 +464,9 @@ class CSS
         $last_nav = null;
         //echo "\n!" . $str . "!\n";
         //var_dump(preg_split($re, $str, 0, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY));
-        foreach (preg_split($re, $str, 0, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY) as $token)
+        foreach (\preg_split($re, $str, 0, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY) as $token)
         {
-            $token = trim($token);
+            $token = \trim($token);
             //echo $token . "-\n";
             switch ($token)
             {
@@ -471,17 +476,17 @@ class CSS
                 case '':
                     if (!empty($item))
                     {
-                        $retval[] = self::translate_part(trim($item), $last_nav);
+                        $retval[] = self::translate_part(\trim($item), $last_nav);
                     }
                     $item     = '';
                     $last_nav = $token;
                     if (!isset($first_nav))
                     {
-                        $first_nav = trim($token);
+                        $first_nav = $token;
                     }
                     else
                     {
-                        $retval[] = self::translate_nav(trim($token));
+                        $retval[] = self::translate_nav(\trim($token));
                     }
                     break;
                 default:
@@ -494,13 +499,13 @@ class CSS
         }
         //    var_dump($first_nav, $retval); exit;
 
-        $retval[] = self::translate_part(trim($item), $last_nav);
+        $retval[] = self::translate_part(\trim($item), $last_nav);
         if (!isset($first_nav))
         {
             $first_nav = '';
         }
 
-        return '.' . self::translate_nav($first_nav) . implode('', $retval);
+        return '.' . self::translate_nav($first_nav) . \implode('', $retval);
     }
 
     /**
@@ -513,11 +518,11 @@ class CSS
         $retval = array();
         $re     = '/(\((?>[^()]|(?R))*\)|\[(?>[^\[\]]|(?R))*\]|,)/';
         $item   = '';
-        foreach (preg_split($re, $str, 0, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY) as $token)
+        foreach (\preg_split($re, $str, 0, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY) as $token)
         {
             if (',' === $token)
             {
-                $retval[] = trim($item);
+                $retval[] = \trim($item);
                 $item     = '';
             }
             else
@@ -525,7 +530,7 @@ class CSS
                 $item .= $token;
             }
         }
-        $retval[] = trim($item);
+        $retval[] = \trim($item);
 
         return $retval;
     }
@@ -541,13 +546,13 @@ class CSS
         {
             return $str;
         }
-        $str    = preg_replace('/\b(text|comment)\(\)/', '\1', $str);
+        $str    = \preg_replace('/\b(text|comment)\(\)/', '\1', $str);
         $retval = array();
         foreach (self::get_expressions($str) as $expr)
         {
             $retval[] = self::translate($expr);
         }
 
-        return implode('|', $retval);
+        return \implode('|', $retval);
     }
 }

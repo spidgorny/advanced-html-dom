@@ -2,7 +2,7 @@
 
 include dirname(__DIR__) . '/vendor/autoload.php';
 
-$dom = new \Deimos\AdvancedHtmlDom\AdvancedHtmlDom();
+$dom = new \Bavix\AdvancedHtmlDom\AdvancedHtmlDom();
 
 $dom->loadFile('https://babichev.net/portfolio');
 

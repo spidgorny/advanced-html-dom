@@ -87,13 +87,12 @@ class AHTMLNode extends AdvancedHtmlBase implements \ArrayAccess
      */
     public function decamelize($str)
     {
-        $str = preg_replace_callback(
+        $str = \preg_replace_callback(
             '/(^|[a-z])([A-Z])/',
-            function ($matches)
-            {
+            function ($matches) {
                 return
-                    strtolower(
-                        strlen($matches[1])
+                    \strtolower(
+                        \strlen($matches[1])
                             ? $matches[1] . '_' . $matches[2] :
                             $matches[2]
                     );
@@ -101,7 +100,7 @@ class AHTMLNode extends AdvancedHtmlBase implements \ArrayAccess
             $str
         );
 
-        return preg_replace('/ /', '_', strtolower($str));
+        return \preg_replace('/ /', '_', \strtolower($str));
     }
 
     /**
@@ -134,19 +133,23 @@ class AHTMLNode extends AdvancedHtmlBase implements \ArrayAccess
         if ($this->at('./preceding-sibling::' . $this->tag) || $this->at('./following-sibling::' . $this->tag) || ($key = $this->tag . 's'))
         {
             $count = $this->search('./preceding-sibling::' . $this->tag)->length + 1;
-            $tag .= '_' . $count;
+            $tag   .= '_' . $count;
         }
 
         if ($children->length == 0)
         {
-            $ret[$this->decamelize(implode(' ', array_filter(array($key, $tag))))] = $this->text;
+            $ret[$this->decamelize(\implode(' ', \array_filter(array($key, $tag))))] = $this->text;
         }
         else
         {
+            $flatten = [];
             foreach ($children as $child)
             {
-                $ret = array_merge($ret, $child->flatten(implode(' ', array_filter(array($key, $level <= 0 ? $tag : null))), $level - 1));
+                $flatten[] = $child->flatten(\implode(' ', \array_filter(array($key, $level <= 0 ? $tag : null))), $level - 1);
+//                $ret = array_merge($ret, $child->flatten(implode(' ', array_filter(array($key, $level <= 0 ? $tag : null))), $level - 1));
             }
+
+            $ret = \array_merge($ret, ...$flatten);
         }
 
         return $ret;
@@ -228,7 +231,7 @@ class AHTMLNode extends AdvancedHtmlBase implements \ArrayAccess
      */
     public function offsetUnset($offset)
     {
-        trigger_error('offsetUnset not implemented', E_USER_WARNING);
+        \trigger_error('offsetUnset not implemented', E_USER_WARNING);
     }
 
     /**

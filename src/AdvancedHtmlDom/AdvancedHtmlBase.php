@@ -98,7 +98,7 @@ class AdvancedHtmlBase
      */
     public function clean($str)
     {
-        return $this->trim(preg_replace('/\s+/', ' ', $str));
+        return $this->trim(\preg_replace('/\s+/', ' ', $str));
     }
 
     /**
@@ -108,14 +108,14 @@ class AdvancedHtmlBase
      */
     public function trim($str)
     {
-        return trim($str);
+        return \trim($str);
     }
 
     /**
      * @param      $css
      * @param null $index
      *
-     * @return AHTMLNode[]|AHTMLNodeList
+     * @return AHTMLNode|AHTMLNodeList
      */
     public function find($css, $index = null)
     {
@@ -142,6 +142,7 @@ class AdvancedHtmlBase
     }
 
     // magic methods
+
     /**
      * @param $key
      * @param $args
@@ -150,7 +151,7 @@ class AdvancedHtmlBase
      */
     public function __call($key, $args)
     {
-        $key = strtolower(str_replace('_', '', $key));
+        $key = \strtolower(\str_replace('_', '', $key));
         switch ($key)
         {
             case 'innertext':
@@ -251,25 +252,25 @@ class AdvancedHtmlBase
         }
 
         // $doc->spans[x]
-        if (preg_match(TAGS_REGEX, $key, $m))
+        if (\preg_match(TAGS_REGEX, $key, $m))
         {
             return $this->find($m[1]);
         }
-        if (preg_match(TAG_REGEX, $key, $m))
+        if (\preg_match(TAG_REGEX, $key, $m))
         {
             return $this->find($m[1], 0);
         }
 
-        if (preg_match('/(clean|trim|str)(.*)/', $key, $m) && isset($m[2]))
+        if (\preg_match('/(clean|trim|str)(.*)/', $key, $m) && isset($m[2]))
         {
             list($arg0, $arg1, $arg2) = $m;
 
             return $this->$arg1($this->$arg2);
         }
 
-        if (!preg_match(ATTRIBUTE_REGEX, $key, $m))
+        if (!\preg_match(ATTRIBUTE_REGEX, $key, $m))
         {
-            trigger_error('Unknown method or property: ' . $key, E_USER_WARNING);
+            \trigger_error('Unknown method or property: ' . $key, E_USER_WARNING);
         }
         if (!$this->node || $this->is_text)
         {
