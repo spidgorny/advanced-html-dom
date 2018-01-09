@@ -5,6 +5,7 @@
 [![Build Status](https://scrutinizer-ci.com/g/bavix/advanced-html-dom/badges/build.png?b=master)](https://scrutinizer-ci.com/g/bavix/advanced-html-dom/build-status/master)
 [![Code Intelligence Status](https://scrutinizer-ci.com/g/bavix/advanced-html-dom/badges/code-intelligence.svg?b=master)](https://scrutinizer-ci.com/code-intelligence)
 
+[![Package Rank](https://phppackages.org/p/bavix/advanced-html-dom/badge/rank.svg)](https://packagist.org/packages/bavix/advanced-html-dom)
 [![Latest Stable Version](https://poser.pugx.org/bavix/advanced-html-dom/v/stable)](https://packagist.org/packages/bavix/advanced-html-dom)
 [![Latest Unstable Version](https://poser.pugx.org/bavix/advanced-html-dom/v/unstable)](https://packagist.org/packages/bavix/advanced-html-dom)
 [![License](https://poser.pugx.org/bavix/advanced-html-dom/license)](https://packagist.org/packages/bavix/advanced-html-dom)
