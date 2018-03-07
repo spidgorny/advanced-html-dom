@@ -72,7 +72,7 @@ class AdvancedHtmlDom extends AdvancedHtmlBase
             $html = \preg_replace('/xmlns=".*?"/ ', '', $html);
         }
 
-        $this->dom->loadHTML($html,LIBXML_NOWARNING | LIBXML_NOERROR);
+        $this->dom->loadHTML($html, LIBXML_NOERROR);
         $this->xpath = new \DOMXPath($this->dom);
         //$this->root = new AHTMLNode($this->dom->documentElement, $this->doc);
         $this->root = $this->at('body');
