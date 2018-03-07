@@ -119,8 +119,7 @@ class CSS
                 $tokens[] = '((last()-position()+1) mod ' . abs($a) . ') = 0';
             }
 
-        } else
-        {
+        } else {
 
             if ($a === null)
             {
@@ -187,8 +186,7 @@ class CSS
             {
                 $tokens[] = "((last()-position()+1) mod " . abs($a) . ") = 0";
             }
-        } else
-        {
+        } else {
             if ($a === null)
             {
                 return "count(preceding-sibling::*) = " . ($b - 1);
@@ -481,8 +479,7 @@ class CSS
                     if (!isset($first_nav))
                     {
                         $first_nav = $token;
-                    } else
-                    {
+                    } else {
                         $retval[] = self::translate_nav(\trim($token));
                     }
                     break;
@@ -521,8 +518,7 @@ class CSS
             {
                 $retval[] = \trim($item);
                 $item     = '';
-            } else
-            {
+            } else {
                 $item .= $token;
             }
         }
