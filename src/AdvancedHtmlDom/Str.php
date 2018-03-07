@@ -60,8 +60,7 @@ class Str
         if ($replacement instanceof \Closure)
         {
             $val = \preg_replace_callback($regex, $replacement, $this->text, $limit);
-        }
-        else
+        } else
         {
             $val = \preg_replace($regex, $replacement, $this->text, $limit);
         }
