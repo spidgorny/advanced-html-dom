@@ -73,9 +73,7 @@ class AHTMLNode extends AdvancedHtmlBase implements \ArrayAccess
         if ($ref_node = $this->node->nextSibling)
         {
             $this->node->parentNode->insertBefore($fragment, $ref_node);
-        }
-        else
-        {
+        } else {
             $this->node->parentNode->appendChild($fragment);
         }
     }
@@ -108,8 +106,7 @@ class AHTMLNode extends AdvancedHtmlBase implements \ArrayAccess
     public function attributes()
     {
         $ret = array();
-        foreach ($this->node->attributes as $attr)
-        {
+        foreach ($this->node->attributes as $attr) {
             $ret[$attr->nodeName] = $attr->nodeValue;
         }
 
@@ -138,9 +135,7 @@ class AHTMLNode extends AdvancedHtmlBase implements \ArrayAccess
         if ($children->length == 0)
         {
             $ret[$this->decamelize(\implode(' ', \array_filter(array($key, $tag))))] = $this->text;
-        }
-        else
-        {
+        } else {
             $flatten = [];
             foreach ($children as $child)
             {
