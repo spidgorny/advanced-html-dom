@@ -27,3 +27,8 @@ The goal of this project is to be a DOM-based drop-in replacement for PHP's simp
 - 10x-20x Performance increase
 - Reduced memory requirement
 - Support for many more css selectors
+
+---
+Supported by
+
+[![Supported by JetBrains](https://cdn.rawgit.com/bavix/development-through/46475b4b/jetbrains.svg)](https://www.jetbrains.com/)
