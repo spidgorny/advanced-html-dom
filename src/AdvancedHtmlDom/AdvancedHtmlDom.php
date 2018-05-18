@@ -38,6 +38,16 @@ class AdvancedHtmlDom extends AdvancedHtmlBase
     }
 
     /**
+     * @inheritdoc
+     */
+    public function __destruct()
+    {
+        $this->xpath = $this->root = null;
+        unset($this->xpath, $this->root);
+        parent::__destruct();
+    }
+
+    /**
      * @param InterfaceCache $cache
      */
     public function setCache(InterfaceCache $cache)

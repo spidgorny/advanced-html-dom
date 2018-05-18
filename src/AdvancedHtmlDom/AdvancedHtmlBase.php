@@ -26,6 +26,16 @@ class AdvancedHtmlBase
     public $is_text = false;
 
     /**
+     * @see https://github.com/monkeysuffrage/advanced_html_dom/issues/19
+     */
+    public function __destruct()
+    {
+        $this->doc = $this->dom = $this->node = null;
+        unset($this->doc, $this->dom, $this->node);
+        Cleanup::all();
+    }
+
+    /**
      * @return mixed
      */
     public function text()
@@ -203,7 +213,7 @@ class AdvancedHtmlBase
 
             // attributes
             case 'hasattribute':
-                return !$this->is_text && $this->node->getAttribute($args[0]);
+                return !$this->is_text && $this->node->hasAttribute($args[0]);
 
             case 'getattribute':
                 $arg = $args[0];
@@ -266,6 +276,10 @@ class AdvancedHtmlBase
             list($arg0, $arg1, $arg2) = $m;
 
             return $this->$arg1($this->$arg2);
+        }
+
+        if (\in_array($key, ['dom','node','doc'])) {
+            return null;
         }
 
         if (!\preg_match(ATTRIBUTE_REGEX, $key, $m))

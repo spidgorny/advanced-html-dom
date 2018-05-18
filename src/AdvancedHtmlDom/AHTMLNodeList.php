@@ -32,6 +32,16 @@ class AHTMLNodeList implements \Iterator, \Countable, \ArrayAccess
         $this->doc      = $doc;
     }
 
+    /**
+     * @see https://github.com/monkeysuffrage/advanced_html_dom/issues/19
+     */
+    public function __destruct()
+    {
+        $this->nodeList = $this->doc = null;
+        unset($this->nodeList, $this->doc);
+        Cleanup::all();
+    }
+
     /*
     abstract public boolean offsetExists ( mixed $offset )
     abstract public mixed offsetGet ( mixed $offset )

@@ -2,6 +2,13 @@
 
 namespace Bavix\AdvancedHtmlDom;
 
+/**
+ * Class AHTMLNode
+ *
+ * @package Bavix\AdvancedHtmlDom
+ *
+ * @property-read string $clean_text
+ */
 class AHTMLNode extends AdvancedHtmlBase implements \ArrayAccess
 {
 
@@ -22,6 +29,16 @@ class AHTMLNode extends AdvancedHtmlBase implements \ArrayAccess
         $this->_path   = $node->getNodePath();
         $this->doc     = $doc;
         $this->is_text = $node->nodeName === '#text';
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function __destruct()
+    {
+        $this->_path = null;
+        unset($this->_path);
+        parent::__destruct();
     }
 
     /**
@@ -209,10 +226,14 @@ class AHTMLNode extends AdvancedHtmlBase implements \ArrayAccess
      */
     public function offsetSet($key, $value)
     {
+        if (\in_array($key, ['_path','dom','doc','node']))
+        {
+            return;
+        }
+
         if ($value)
         {
             $this->node->setAttribute($key, $value);
-
             return;
         }
 
