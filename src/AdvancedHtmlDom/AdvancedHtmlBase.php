@@ -278,7 +278,7 @@ class AdvancedHtmlBase
             return $this->$arg1($this->$arg2);
         }
 
-        if (\in_array($key, ['dom','node','doc'])) {
+        if (\in_array($key, ['dom', 'node', 'doc'])) {
             return null;
         }
 
