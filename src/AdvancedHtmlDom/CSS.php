@@ -11,7 +11,7 @@ class CSS
      */
     private static function is_xpath($str)
     {
-        return \preg_match('/^\.?\//', $str);
+        return \preg_match('/^\(?\.?\//', $str);
     }
 
     /**

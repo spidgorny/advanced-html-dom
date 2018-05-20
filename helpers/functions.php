@@ -4,13 +4,13 @@ namespace Bavix\AdvancedHtmlDom;
 
 use Bavix\AdvancedHtmlDom\CacheSystem\InterfaceCache;
 
-$attributes = array(
+$attributes = [
     'href', 'src', 'id', 'class', 'name',
     'text', 'height', 'width', 'content',
     'value', 'title', 'alt'
-);
+];
 
-$tags = array(
+$tags = [
     'a', 'abbr', 'address', 'area', 'article', 'aside',
     'audio', 'b', 'base', 'blockquote', 'body', 'br',
     'button', 'canvas', 'caption', 'cite', 'code', 'col',
@@ -25,30 +25,30 @@ $tags = array(
     'strong', 'style', 'sub', 'sup', 'table', 'tbody', 'td',
     'textarea', 'tfoot', 'th', 'thead', 'title', 'tr',
     'track', 'u', 'ul', 'var', 'video'
-);
+];
 
-$tags       = implode('|', $tags);
-$attributes = implode('|', $attributes);
+$tags       = \implode('|', $tags);
+$attributes = \implode('|', $attributes);
 
 /**
  * TAG_REGEX
  */
-define('TAG_REGEX', '/^(' . $tags . ')$/');
+\define('TAG_REGEX', '/^(' . $tags . ')$/');
 
 /**
  * TAGS_REGEX
  */
-define('TAGS_REGEX', '/^(' . $tags . ')e?s$/');
+\define('TAGS_REGEX', '/^(' . $tags . ')e?s$/');
 
 /**
  * ATTRIBUTE_REGEX
  */
-define('ATTRIBUTE_REGEX', '/^(' . $attributes . '|data-\w+)$/');
+\define('ATTRIBUTE_REGEX', '/^(' . $attributes . '|data-[\w\-]+)$/');
 
 /**
  * ATTRIBUTES_REGEX
  */
-define('ATTRIBUTES_REGEX', '/^(' . $attributes . '|data-\w+)e?s$/');
+\define('ATTRIBUTES_REGEX', '/^(' . $attributes . '|data-[\w\-]+)e?s$/');
 
 /**
  * @param string         $html
