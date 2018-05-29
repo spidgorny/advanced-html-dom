@@ -226,7 +226,7 @@ class AHTMLNode extends AdvancedHtmlBase implements \ArrayAccess
      */
     public function offsetSet($key, $value)
     {
-        if (\in_array($key, ['_path','dom','doc','node']))
+        if (\in_array($key, ['_path', 'dom', 'doc', 'node']))
         {
             return;
         }
