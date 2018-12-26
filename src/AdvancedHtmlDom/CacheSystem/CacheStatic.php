@@ -17,8 +17,7 @@ class CacheStatic implements InterfaceCache
      */
     public function get($url)
     {
-        if (!isset(self::$cache[$url]))
-        {
+        if (!isset(self::$cache[$url])) {
             self::$cache[$url] = \file_get_contents($url);
         }
 

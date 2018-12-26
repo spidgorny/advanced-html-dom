@@ -29,7 +29,7 @@ class AHTMLNodeList implements \Iterator, \Countable, \ArrayAccess
     public function __construct($nodeList, $doc)
     {
         $this->nodeList = $nodeList;
-        $this->doc      = $doc;
+        $this->doc = $doc;
     }
 
     /**
@@ -147,8 +147,7 @@ class AHTMLNodeList implements \Iterator, \Countable, \ArrayAccess
      */
     public function remove()
     {
-        foreach ($this as $node)
-        {
+        foreach ($this as $node) {
             $node->remove();
         }
 
@@ -163,8 +162,7 @@ class AHTMLNodeList implements \Iterator, \Countable, \ArrayAccess
     public function map($c)
     {
         $ret = array();
-        foreach ($this as $node)
-        {
+        foreach ($this as $node) {
             $ret[] = $c($node);
         }
 
@@ -175,6 +173,16 @@ class AHTMLNodeList implements \Iterator, \Countable, \ArrayAccess
     //math methods
 
     /**
+     * @param $nl
+     *
+     * @return AHTMLNodeList
+     */
+    public function minus($nl)
+    {
+        return $this->doMath($nl, 'minus');
+    }
+
+    /**
      * @param        $nl
      * @param string $op
      *
@@ -182,19 +190,16 @@ class AHTMLNodeList implements \Iterator, \Countable, \ArrayAccess
      */
     public function doMath($nl, $op = 'plus')
     {
-        $paths       = array();
+        $paths = array();
         $other_paths = array();
 
-        foreach ($this as $node)
-        {
+        foreach ($this as $node) {
             $paths[] = $node->node->getNodePath();
         }
-        foreach ($nl as $node)
-        {
+        foreach ($nl as $node) {
             $other_paths[] = $node->node->getNodePath();
         }
-        switch ($op)
-        {
+        switch ($op) {
             case 'plus':
                 $new_paths = \array_unique(\array_merge($paths, $other_paths));
                 break;
@@ -207,16 +212,6 @@ class AHTMLNodeList implements \Iterator, \Countable, \ArrayAccess
         }
 
         return new AHTMLNodeList($this->doc->xpath->query(implode('|', $new_paths)), $this->doc);
-    }
-
-    /**
-     * @param $nl
-     *
-     * @return AHTMLNodeList
-     */
-    public function minus($nl)
-    {
-        return $this->doMath($nl, 'minus');
     }
 
     /**
@@ -251,12 +246,10 @@ class AHTMLNodeList implements \Iterator, \Countable, \ArrayAccess
     public function __call($key, $values)
     {
         $key = \strtolower(\str_replace('_', '', $key));
-        switch ($key)
-        {
+        switch ($key) {
             case 'to_a':
                 $retval = array();
-                foreach ($this as $node)
-                {
+                foreach ($this as $node) {
                     $retval[] = new AHTMLNode($this->nodeList->item($this->counter), $this->doc);
                 }
 
@@ -271,22 +264,18 @@ class AHTMLNodeList implements \Iterator, \Countable, \ArrayAccess
             if(preg_match(TAG_REGEX, $key, $m)) return $this->find($m[1], 0);
         */
 
-        if (\preg_match(ATTRIBUTES_REGEX, $key, $m) || \preg_match('/^((clean|trim|str).*)s$/', $key, $m))
-        {
-            foreach ($this as $node)
-            {
-                $arg      = $m[1];
+        if (\preg_match(ATTRIBUTES_REGEX, $key, $m) || \preg_match('/^((clean|trim|str).*)s$/', $key, $m)) {
+            foreach ($this as $node) {
+                $arg = $m[1];
                 $retval[] = $node->$arg;
             }
 
             return $retval;
         }
 
-        if (\preg_match(ATTRIBUTE_REGEX, $key, $m))
-        {
-            foreach ($this as $node)
-            {
-                $arg      = $m[1];
+        if (\preg_match(ATTRIBUTE_REGEX, $key, $m)) {
+            foreach ($this as $node) {
+                $arg = $m[1];
                 $retval[] = $node->$arg;
             }
 
@@ -294,8 +283,7 @@ class AHTMLNodeList implements \Iterator, \Countable, \ArrayAccess
         }
 
         // what now?
-        foreach ($this as $node)
-        {
+        foreach ($this as $node) {
             $retval[] = isset($values[0]) ? $node->$key($values[0]) : $node->$key();
         }
 
