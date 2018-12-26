@@ -36,20 +36,10 @@ Features
 * Lots of stuff that even BeautifulSoup and Nokogiri can't do: `$doc->search('span:lt(7):not(.foo)')`
 * Lots more features that haven't been documented yet.
 
-# How to install it
+# How to install it via composer
 
 ```bash
 composer req bavix/advanced-html-dom
-```
-
-### OR
-
-```json
-{
-    "require": {
-        "bavix/advanced-html-dom": "~1.0"
-    }
-}
 ```
 
 ---
