@@ -5,235 +5,46 @@ namespace Bavix\AdvancedHtmlDom;
 class CSS
 {
     /**
-     * @param $str
-     *
-     * @return int
-     */
-    private static function is_xpath($str)
-    {
-        return \preg_match('/^\(?\.?\//', $str);
-    }
-
-    /**
-     * @param $str
+     * @param        $str
+     * @param string $last_nav
      *
      * @return string
      */
-    public static function do_id($str)
+    public static function translate_part($str, $last_nav = '')
     {
-        if (!\preg_match('/^#(.*)/', $str, $m))
-        {
-            die('no attribute match!');
-        }
-
-        return "@id = '" . $m[1] . '\'';
-    }
-
-    /**
-     * @param $str
-     *
-     * @return string
-     */
-    public static function do_class($str)
-    {
-        if (!\preg_match('/^\.(.*)/', $str, $m))
-        {
-            die('no attribute match!');
-        }
-
-        return "contains(concat(' ', normalize-space(@class), ' '), ' " . $m[1] . " ')";
-    }
-
-    /**
-     * @param $str
-     *
-     * @return array
-     */
-    private static function parse_nth($str)
-    {
-        switch (true)
-        {
-
-            case \preg_match('/^(-?\d+)(?:n\+(\d+))$/', $str, $m):
-                return array((int)$m[1], (int)$m[2]);
-
-            case \preg_match('/^n\+(\d+)$/', $str, $m):
-                return array(1, (int)$m[1]);
-
-            case \preg_match('/^-n\+(\d+)$/', $str, $m):
-                return array(-1, (int)$m[1]);
-
-            case \preg_match('/^(\d+)n$/', $str, $m):
-                return array((int)$m[1], 0);
-
-            case \preg_match('/^even$/', $str, $m):
-                return self::parse_nth('2n+0');
-
-            case \preg_match('/^odd$/', $str, $m):
-                return self::parse_nth('2n+1');
-
-            case \preg_match('/^(-?\d+)$/', $str, $m):
-                return array(null, (int)$m[1]);
-
-            default:
-                die('no match: ' . $str);
-        }
-    }
-
-    /**
-     * @param      $str
-     * @param bool $last
-     *
-     * @return string
-     */
-    private static function nth($str, $last = false)
-    {
-        list($a, $b) = self::parse_nth($str);
-        //echo $a . ":" . $b . "\n";
-        $tokens = [];
-
-        if ($last)
-        {
-            if ($a === null)
-            {
-                return 'position() = last() - ' . ($b - 1);
-            }
-
-            if ($b > 0 && $a >= 0)
-            {
-                $tokens[] = '((last()-position()+1) >= ' . $b . ')';
-            }
-
-            if ($b > 0 && $a < 0)
-            {
-                $tokens[] = '((last()-position()+1) <= ' . $b . ')';
-            }
-
-            if ($a != 0 && $b != 0)
-            {
-                $tokens[] = '((((last()-position()+1)-' . $b . ') mod ' . abs($a) . ') = 0)';
-            }
-
-            if ($a != 0 && $b == 0)
-            {
-                $tokens[] = '((last()-position()+1) mod ' . abs($a) . ') = 0';
-            }
-
-        } else {
-
-            if ($a === null)
-            {
-                return 'position() = ' . $b;
-            }
-
-            if ($b > 0 && $a >= 0)
-            {
-                $tokens[] = '(position() >= ' . $b . ')';
-            }
-
-            if ($b > 0 && $a < 0)
-            {
-                $tokens[] = '(position() <= ' . $b . ')';
-            }
-
-            if ($a != 0 && $b != 0)
-            {
-                $tokens[] = '(((position()-' . $b . ') mod ' . abs($a) . ') = 0)';
-            }
-
-            if ($a != 0 && $b == 0)
-            {
-                $tokens[] = '(position() mod ' . abs($a) . ') = 0';
-            }
-
-        }
-
-        return \implode(' and ', $tokens);
-    }
-
-    // This stuff is wrong, I need to look at this some more.
-
-    /**
-     * @param      $str
-     * @param bool $last
-     *
-     * @return string
-     */
-    private static function nth_child($str, $last = false)
-    {
-        list($a, $b) = self::parse_nth($str);
-        //echo $a . ":" . $b . "\n";
-        $tokens = [];
-        if ($last)
-        {
-            if ($a === null)
-            {
-                return "count(following-sibling::*) = " . ($b - 1);
-            }
-            if ($b > 0 && $a >= 0)
-            {
-                $tokens[] = "((last()-position()+1) >= " . $b . ")";
-            }
-            if ($b > 0 && $a < 0)
-            {
-                $tokens[] = "((last()-position()+1) <= " . $b . ")";
-            }
-            if ($a != 0 && $b != 0)
-            {
-                $tokens[] = "((((last()-position()+1)-" . $b . ") mod " . abs($a) . ") = 0)";
-            }
-            if ($a != 0 && $b == 0)
-            {
-                $tokens[] = "((last()-position()+1) mod " . abs($a) . ") = 0";
-            }
-        } else {
-            if ($a === null)
-            {
-                return "count(preceding-sibling::*) = " . ($b - 1);
-            }
-            if ($b > 0 && $a >= 0)
-            {
-                $tokens[] = "(position() >= " . $b . ")";
-            }
-            if ($b > 0 && $a < 0)
-            {
-                $tokens[] = "(position() <= " . $b . ")";
-            }
-            if ($a != 0 && $b != 0)
-            {
-                $tokens[] = "(((position()-" . $b . ") mod " . abs($a) . ") = 0)";
-            }
-            if ($a != 0 && $b == 0)
-            {
-                $tokens[] = "(position() mod " . abs($a) . ") = 0";
+        $str = \preg_replace('/:contains\(([^()]*)\)/', '[text*=\\1]', $str); // quick and dirty contains fix
+        $retval = array();
+        $re = '/(:(?:nth-last-child|nth-of-type|nth-last-of-type|first-child|last-child|first-of-type|last-of-type|only-child|only-of-type|nth-child|first|last|gt|lt|eq|root|nth|empty|not|has|contains|parent|link|visited|hover|active)(?:\((?>[^()]|(?R))*\))?|\[(?>[^\[\]]|(?R))*\]|[#.][\w-]+)/';
+        $name = '*';
+        foreach (\preg_split($re, $str, 0, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY) as $token) {
+            switch (true) {
+                case 0 === \strpos($token, ':'):
+//                case preg_match('/^:/', $token):
+                    $retval[] = self::do_pseudo($token, $name);
+                    break;
+                case 0 === \strpos($token, '['):
+//                case preg_match('/^\[/', $token):
+                    $retval[] = self::do_braces($token);
+                    break;
+                case 0 === \strpos($token, '#'):
+//                case preg_match('/^#/', $token):
+                    $retval[] = "[" . self::do_id($token) . "]";
+                    break;
+                case 0 === \strpos($token, '.'):
+//                case preg_match('/^\./', $token):
+                    $retval[] = "[" . self::do_class($token) . "]";
+                    break;
+                default:
+                    $name = $token;
             }
         }
-
-        return \implode(' and ', $tokens);
-    }
-
-    /**
-     * @param $str
-     *
-     * @return string
-     */
-    private static function not($str)
-    {
-        switch (true)
-        {
-            case \preg_match('/^\.(\w+)$/', $str, $m):
-                return self::do_class($str);
-            case \preg_match('/^\#(\w+)$/', $str, $m):
-                return self::do_id($str);
-            case \preg_match('/^(\w+)$/', $str, $m):
-                return "self::" . $str;
-            case \preg_match('/^\[(.*)\]$/', $str, $m):
-                return substr(self::do_braces($str), 1, -1);
-            default:
-                return self::translate($str);
+        if (\in_array($name, array('text', 'comment'))) {
+            $name .= '()';
         }
-    }
 
+        return ($last_nav === '+' ? "*[1]/self::" : '') . $name . \implode('', $retval);
+        //return $name . implode('', $retval);
+    }
 
     /**
      * @param $str
@@ -243,15 +54,13 @@ class CSS
      */
     public static function do_pseudo($str, $name)
     {
-        if (!\preg_match('/^:([\w-]+)(?:\((.*)\))?$/', $str, $m))
-        {
+        if (!\preg_match('/^:([\w-]+)(?:\((.*)\))?$/', $str, $m)) {
             die('no attribute match!');
         }
         //var_dump($m); exit;
         @list($_, $pseudo, $value) = $m;
 
-        switch (true)
-        {
+        switch (true) {
             #case preg_match('/^\[.*\]$/', $value): $inner = preg_replace('/^\[(.*)\]$/', '\1', self::do_braces($value)); break;
             default:
                 $inner = self::translate($value);
@@ -259,8 +68,7 @@ class CSS
         }
 
 //    self::translate_part($value)
-        switch ($pseudo)
-        {
+        switch ($pseudo) {
             case 'last':
                 return '[position() = last()]';
             case 'first':
@@ -327,26 +135,286 @@ class CSS
      *
      * @return string
      */
+    public static function translate($str)
+    {
+        $retval = array();
+        $re = '/(\((?>[^()]|(?R))*\)|\[(?>[^\[\]]|(?R))*\]|\s*[+~>]\s*| \s*)/';
+        $item = '';
+
+        $last_nav = null;
+        //echo "\n!" . $str . "!\n";
+        //var_dump(preg_split($re, $str, 0, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY));
+        foreach (\preg_split($re, $str, 0, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY) as $token) {
+            $token = \trim($token);
+            //echo $token . "-\n";
+            switch ($token) {
+                case '>':
+                case '~':
+                case '+':
+                case '':
+                    if (!empty($item)) {
+                        $retval[] = self::translate_part(\trim($item), $last_nav);
+                    }
+                    $item = '';
+                    $last_nav = $token;
+                    if (!isset($first_nav)) {
+                        $first_nav = $token;
+                    } else {
+                        $retval[] = self::translate_nav(\trim($token));
+                    }
+                    break;
+                default:
+                    if (!isset($first_nav)) {
+                        $first_nav = '';
+                    }
+                    $item .= $token;
+            }
+        }
+        //    var_dump($first_nav, $retval); exit;
+
+        $retval[] = self::translate_part(\trim($item), $last_nav);
+        if (!isset($first_nav)) {
+            $first_nav = '';
+        }
+
+        return '.' . self::translate_nav($first_nav) . \implode('', $retval);
+    }
+
+    /**
+     * @param $str
+     *
+     * @return string
+     */
+    public static function translate_nav($str)
+    {
+        switch ($str) {
+            case '+':
+                return '/following-sibling::';
+            case '~':
+                return '/following-sibling::';
+            case '>':
+                return '/';
+            case '':
+                return '//';
+        }
+    }
+
+    /**
+     * @param      $str
+     * @param bool $last
+     *
+     * @return string
+     */
+    private static function nth_child($str, $last = false)
+    {
+        list($a, $b) = self::parse_nth($str);
+
+        $tokens = [];
+        if ($last) {
+            if ($a === null) {
+                return "count(following-sibling::*) = " . ($b - 1);
+            }
+            if ($b > 0 && $a >= 0) {
+                $tokens[] = "((last()-position()+1) >= " . $b . ")";
+            }
+            if ($b > 0 && $a < 0) {
+                $tokens[] = "((last()-position()+1) <= " . $b . ")";
+            }
+            if ($a != 0 && $b != 0) {
+                $tokens[] = "((((last()-position()+1)-" . $b . ") mod " . abs($a) . ") = 0)";
+            }
+            if ($a != 0 && $b == 0) {
+                $tokens[] = "((last()-position()+1) mod " . abs($a) . ") = 0";
+            }
+        } else {
+            if ($a === null) {
+                return "count(preceding-sibling::*) = " . ($b - 1);
+            }
+            if ($b > 0 && $a >= 0) {
+                $tokens[] = "(position() >= " . $b . ")";
+            }
+            if ($b > 0 && $a < 0) {
+                $tokens[] = "(position() <= " . $b . ")";
+            }
+            if ($a != 0 && $b != 0) {
+                $tokens[] = "(((position()-" . $b . ") mod " . abs($a) . ") = 0)";
+            }
+            if ($a != 0 && $b == 0) {
+                $tokens[] = "(position() mod " . abs($a) . ") = 0";
+            }
+        }
+
+        return \implode(' and ', $tokens);
+    }
+
+    // This stuff is wrong, I need to look at this some more.
+
+    /**
+     * @param $str
+     *
+     * @return array
+     */
+    private static function parse_nth($str)
+    {
+        switch (true) {
+
+            case \preg_match('/^(-?\d+)(?:n\+(\d+))$/', $str, $m):
+                return array((int)$m[1], (int)$m[2]);
+
+            case \preg_match('/^n\+(\d+)$/', $str, $m):
+                return array(1, (int)$m[1]);
+
+            case \preg_match('/^-n\+(\d+)$/', $str, $m):
+                return array(-1, (int)$m[1]);
+
+            case \preg_match('/^(\d+)n$/', $str, $m):
+                return array((int)$m[1], 0);
+
+            case \preg_match('/^even$/', $str, $m):
+                return self::parse_nth('2n+0');
+
+            case \preg_match('/^odd$/', $str, $m):
+                return self::parse_nth('2n+1');
+
+            case \preg_match('/^(-?\d+)$/', $str, $m):
+                return array(null, (int)$m[1]);
+
+            default:
+                die('no match: ' . $str);
+        }
+    }
+
+    /**
+     * @param      $str
+     * @param bool $last
+     *
+     * @return string
+     */
+    private static function nth($str, $last = false)
+    {
+        list($a, $b) = self::parse_nth($str);
+        //echo $a . ":" . $b . "\n";
+        $tokens = [];
+
+        if ($last) {
+            if ($a === null) {
+                return 'position() = last() - ' . ($b - 1);
+            }
+
+            if ($b > 0 && $a >= 0) {
+                $tokens[] = '((last()-position()+1) >= ' . $b . ')';
+            }
+
+            if ($b > 0 && $a < 0) {
+                $tokens[] = '((last()-position()+1) <= ' . $b . ')';
+            }
+
+            if ($a != 0 && $b != 0) {
+                $tokens[] = '((((last()-position()+1)-' . $b . ') mod ' . abs($a) . ') = 0)';
+            }
+
+            if ($a != 0 && $b == 0) {
+                $tokens[] = '((last()-position()+1) mod ' . abs($a) . ') = 0';
+            }
+
+        } else {
+
+            if ($a === null) {
+                return 'position() = ' . $b;
+            }
+
+            if ($b > 0 && $a >= 0) {
+                $tokens[] = '(position() >= ' . $b . ')';
+            }
+
+            if ($b > 0 && $a < 0) {
+                $tokens[] = '(position() <= ' . $b . ')';
+            }
+
+            if ($a != 0 && $b != 0) {
+                $tokens[] = '(((position()-' . $b . ') mod ' . abs($a) . ') = 0)';
+            }
+
+            if ($a != 0 && $b == 0) {
+                $tokens[] = '(position() mod ' . abs($a) . ') = 0';
+            }
+
+        }
+
+        return \implode(' and ', $tokens);
+    }
+
+    /**
+     * @param $str
+     *
+     * @return string
+     */
+    private static function not($str)
+    {
+        switch (true) {
+            case \preg_match('/^\.(\w+)$/', $str, $m):
+                return self::do_class($str);
+            case \preg_match('/^\#(\w+)$/', $str, $m):
+                return self::do_id($str);
+            case \preg_match('/^(\w+)$/', $str, $m):
+                return "self::" . $str;
+            case \preg_match('/^\[(.*)\]$/', $str, $m):
+                return substr(self::do_braces($str), 1, -1);
+            default:
+                return self::translate($str);
+        }
+    }
+
+    /**
+     * @param $str
+     *
+     * @return string
+     */
+    public static function do_class($str)
+    {
+        if (!\preg_match('/^\.(.*)/', $str, $m)) {
+            die('no attribute match!');
+        }
+
+        return "contains(concat(' ', normalize-space(@class), ' '), ' " . $m[1] . " ')";
+    }
+
+    /**
+     * @param $str
+     *
+     * @return string
+     */
+    public static function do_id($str)
+    {
+        if (!\preg_match('/^#(.*)/', $str, $m)) {
+            die('no attribute match!');
+        }
+
+        return "@id = '" . $m[1] . '\'';
+    }
+
+    /**
+     * @param $str
+     *
+     * @return string
+     */
     public static function do_braces($str)
     {
         $re = '/("(?>[^"]|(?R))*\)"|\'(?>[^\']|(?R))*\'|[~^$*|]?=)\s*/';
 
         $tokens = \preg_split($re, \substr($str, 1, \strlen($str) - 2), 0, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY);
-//    var_dump($tokens);
+
         $attr = \trim(\array_shift($tokens));
-//     && )
-        if (!$op = @\trim(\array_shift($tokens)))
-        {
-            switch (true)
-            {
+
+        if (!$op = @\trim(\array_shift($tokens))) {
+            switch (true) {
                 case \preg_match('/^\d+$/', $attr):
                     return "[count(preceding-sibling::*) = " . ($attr - 1) . "]"; // [2] -> [count(preceding-sibling::*) = 1]
                 default:
                     return "[@" . $attr . "]"; // [foo] => [@foo]
             }
         }
-        switch (true)
-        {
+        switch (true) {
             case \preg_match('/^(text|comment)$/', $attr, $m):
                 $attr = $m[1] . "()";
                 break;
@@ -354,16 +422,13 @@ class CSS
                 $attr = '@' . $attr;
                 break;
         }
-//    if(!preg_match('/[@(]/', $attr)) $attr = '@' . $attr;
+
         $value = @\trim(\array_shift($tokens));
-        if (!\preg_match('/^["\'].*["\']$/', $value))
-        {
+        if (!\preg_match('/^["\'].*["\']$/', $value)) {
             $value = "'" . $value . "'";
         }
-//    $value = "'" . preg_replace('/^["\'](.*)["\']$/', '\1', $value) . "'";
 
-        switch ($op)
-        {
+        switch ($op) {
             case '*=':
                 return "[contains(" . $attr . ", " . $value . ")]";
             case '^=':
@@ -384,122 +449,30 @@ class CSS
     /**
      * @param $str
      *
-     * @return string
+     * @return mixed|string
      */
-    public static function translate_nav($str)
+    public static function xpath_for($str)
     {
-        switch ($str)
-        {
-            case '+':
-                return '/following-sibling::';
-            case '~':
-                return '/following-sibling::';
-            case '>':
-                return '/';
-            case '':
-                return '//';
+        if (self::is_xpath($str)) {
+            return $str;
         }
-    }
-
-    /**
-     * @param        $str
-     * @param string $last_nav
-     *
-     * @return string
-     */
-    public static function translate_part($str, $last_nav = '')
-    {
-        $str    = \preg_replace('/:contains\(([^()]*)\)/', '[text*=\\1]', $str); // quick and dirty contains fix
+        $str = \preg_replace('/\b(text|comment)\(\)/', '\1', $str);
         $retval = array();
-        $re     = '/(:(?:nth-last-child|nth-of-type|nth-last-of-type|first-child|last-child|first-of-type|last-of-type|only-child|only-of-type|nth-child|first|last|gt|lt|eq|root|nth|empty|not|has|contains|parent|link|visited|hover|active)(?:\((?>[^()]|(?R))*\))?|\[(?>[^\[\]]|(?R))*\]|[#.][\w-]+)/';
-        $name   = '*';
-        foreach (\preg_split($re, $str, 0, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY) as $token)
-        {
-            switch (true)
-            {
-                case 0 === \strpos($token, ':'):
-//                case preg_match('/^:/', $token):
-                    $retval[] = self::do_pseudo($token, $name);
-                    break;
-                case 0 === \strpos($token, '['):
-//                case preg_match('/^\[/', $token):
-                    $retval[] = self::do_braces($token);
-                    break;
-                case 0 === \strpos($token, '#'):
-//                case preg_match('/^#/', $token):
-                    $retval[] = "[" . self::do_id($token) . "]";
-                    break;
-                case 0 === \strpos($token, '.'):
-//                case preg_match('/^\./', $token):
-                    $retval[] = "[" . self::do_class($token) . "]";
-                    break;
-                default:
-                    $name = $token;
-            }
-        }
-        if (\in_array($name, array('text', 'comment')))
-        {
-            $name .= '()';
+        foreach (self::get_expressions($str) as $expr) {
+            $retval[] = self::translate($expr);
         }
 
-        return ($last_nav === '+' ? "*[1]/self::" : '') . $name . \implode('', $retval);
-        //return $name . implode('', $retval);
+        return \implode('|', $retval);
     }
 
     /**
      * @param $str
      *
-     * @return string
+     * @return int
      */
-    public static function translate($str)
+    private static function is_xpath($str)
     {
-        $retval = array();
-        $re     = '/(\((?>[^()]|(?R))*\)|\[(?>[^\[\]]|(?R))*\]|\s*[+~>]\s*| \s*)/';
-        $item   = '';
-
-        $last_nav = null;
-        //echo "\n!" . $str . "!\n";
-        //var_dump(preg_split($re, $str, 0, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY));
-        foreach (\preg_split($re, $str, 0, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY) as $token)
-        {
-            $token = \trim($token);
-            //echo $token . "-\n";
-            switch ($token)
-            {
-                case '>':
-                case '~':
-                case '+':
-                case '':
-                    if (!empty($item))
-                    {
-                        $retval[] = self::translate_part(\trim($item), $last_nav);
-                    }
-                    $item     = '';
-                    $last_nav = $token;
-                    if (!isset($first_nav))
-                    {
-                        $first_nav = $token;
-                    } else {
-                        $retval[] = self::translate_nav(\trim($token));
-                    }
-                    break;
-                default:
-                    if (!isset($first_nav))
-                    {
-                        $first_nav = '';
-                    }
-                    $item .= $token;
-            }
-        }
-        //    var_dump($first_nav, $retval); exit;
-
-        $retval[] = self::translate_part(\trim($item), $last_nav);
-        if (!isset($first_nav))
-        {
-            $first_nav = '';
-        }
-
-        return '.' . self::translate_nav($first_nav) . \implode('', $retval);
+        return \preg_match('/^(?:string)?\(?\.?\//', $str);
     }
 
     /**
@@ -510,14 +483,12 @@ class CSS
     private static function get_expressions($str)
     {
         $retval = array();
-        $re     = '/(\((?>[^()]|(?R))*\)|\[(?>[^\[\]]|(?R))*\]|,)/';
-        $item   = '';
-        foreach (\preg_split($re, $str, 0, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY) as $token)
-        {
-            if (',' === $token)
-            {
+        $re = '/(\((?>[^()]|(?R))*\)|\[(?>[^\[\]]|(?R))*\]|,)/';
+        $item = '';
+        foreach (\preg_split($re, $str, 0, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY) as $token) {
+            if (',' === $token) {
                 $retval[] = \trim($item);
-                $item     = '';
+                $item = '';
             } else {
                 $item .= $token;
             }
@@ -525,26 +496,5 @@ class CSS
         $retval[] = \trim($item);
 
         return $retval;
-    }
-
-    /**
-     * @param $str
-     *
-     * @return mixed|string
-     */
-    public static function xpath_for($str)
-    {
-        if (self::is_xpath($str))
-        {
-            return $str;
-        }
-        $str    = \preg_replace('/\b(text|comment)\(\)/', '\1', $str);
-        $retval = array();
-        foreach (self::get_expressions($str) as $expr)
-        {
-            $retval[] = self::translate($expr);
-        }
-
-        return \implode('|', $retval);
     }
 }

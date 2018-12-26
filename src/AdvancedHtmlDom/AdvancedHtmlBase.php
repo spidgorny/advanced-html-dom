@@ -36,11 +36,11 @@ class AdvancedHtmlBase
     }
 
     /**
-     * @return mixed
+     * @return string
      */
-    public function text()
+    public function __toString()
     {
-        return $this->node->nodeValue;
+        return (string)$this->html();
     }
 
     /**
@@ -49,14 +49,6 @@ class AdvancedHtmlBase
     public function html()
     {
         return $this->doc->dom->saveHTML($this->node);
-    }
-
-    /**
-     * @return string
-     */
-    public function __toString()
-    {
-        return (string)$this->html();
     }
 
     /**
@@ -122,38 +114,6 @@ class AdvancedHtmlBase
     }
 
     /**
-     * @param      $css
-     * @param null $index
-     *
-     * @return array|AHTMLNode|AHTMLNodeList
-     */
-    public function find($css, $index = null)
-    {
-        $xpath = CSS::xpath_for($css);
-
-        if (!isset($this->doc, $this->doc->xpath))
-        {
-            return null;
-        }
-
-        if (null === $index)
-        {
-            return new AHTMLNodeList($this->doc->xpath->query($xpath, $this->node), $this->doc);
-        }
-
-        $nl = $this->doc->xpath->query($xpath, $this->node);
-        if ($index < 0)
-        {
-            $index = $nl->length + $index;
-        }
-        $node = $nl->item($index);
-
-        return $node ? new AHTMLNode($node, $this->doc) : null;
-    }
-
-    // magic methods
-
-    /**
      * @param $key
      * @param $args
      *
@@ -162,8 +122,7 @@ class AdvancedHtmlBase
     public function __call($key, $args)
     {
         $key = \strtolower(\str_replace('_', '', $key));
-        switch ($key)
-        {
+        switch ($key) {
             case 'innertext':
                 return ($this->is_text || !$this->children->length) ? $this->text() : $this->find('./text()|./*')->outertext;
             case 'plaintext':
@@ -174,8 +133,7 @@ class AdvancedHtmlBase
                 return $this->html();
             case 'innerhtml':
                 $ret = '';
-                foreach ($this->node->childNodes as $child)
-                {
+                foreach ($this->node->childNodes as $child) {
                     $ret .= $this->doc->dom->saveHTML($child);
                 }
 
@@ -262,17 +220,14 @@ class AdvancedHtmlBase
         }
 
         // $doc->spans[x]
-        if (\preg_match(TAGS_REGEX, $key, $m))
-        {
+        if (\preg_match(TAGS_REGEX, $key, $m)) {
             return $this->find($m[1]);
         }
-        if (\preg_match(TAG_REGEX, $key, $m))
-        {
+        if (\preg_match(TAG_REGEX, $key, $m)) {
             return $this->find($m[1], 0);
         }
 
-        if (\preg_match('/(clean|trim|str)(.*)/', $key, $m) && isset($m[2]))
-        {
+        if (\preg_match('/(clean|trim|str)(.*)/', $key, $m) && isset($m[2])) {
             list($arg0, $arg1, $arg2) = $m;
 
             return $this->$arg1($this->$arg2);
@@ -282,16 +237,51 @@ class AdvancedHtmlBase
             return null;
         }
 
-        if (!\preg_match(ATTRIBUTE_REGEX, $key, $m))
-        {
+        if (!\preg_match(ATTRIBUTE_REGEX, $key, $m)) {
             \trigger_error('Unknown method or property: ' . $key, E_USER_WARNING);
         }
-        if (!$this->node || $this->is_text)
-        {
+        if (!$this->node || $this->is_text) {
             return null;
         }
 
         return $this->node->getAttribute($key);
+    }
+
+    /**
+     * @return mixed
+     */
+    public function text()
+    {
+        return $this->node->nodeValue;
+    }
+
+    // magic methods
+
+    /**
+     * @param      $css
+     * @param null $index
+     *
+     * @return array|AHTMLNode|AHTMLNodeList
+     */
+    public function find($css, $index = null)
+    {
+        $xpath = CSS::xpath_for($css);
+
+        if (!isset($this->doc, $this->doc->xpath)) {
+            return null;
+        }
+
+        if (null === $index) {
+            return new AHTMLNodeList($this->doc->xpath->query($xpath, $this->node), $this->doc);
+        }
+
+        $nl = $this->doc->xpath->query($xpath, $this->node);
+        if ($index < 0) {
+            $index = $nl->length + $index;
+        }
+        $node = $nl->item($index);
+
+        return $node ? new AHTMLNode($node, $this->doc) : null;
     }
 
     /**

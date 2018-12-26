@@ -14,6 +14,8 @@
   "type": "library",
   "require": {
     "php": "^7.1",
+    "ext-libxml": "*",
+    "ext-dom": "*",
     "ext-xml": "*"
   },
   "require-dev": {

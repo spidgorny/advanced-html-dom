@@ -2,8 +2,10 @@
 
 namespace Bavix\AdvancedHtmlDom;
 
-class Cleanup {
-    public static function all(): void {
+class Cleanup
+{
+    public static function all(): void
+    {
         if (\function_exists('gc_collect_cycles')) {
             \gc_collect_cycles();
         }
