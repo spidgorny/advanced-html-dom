@@ -27,7 +27,7 @@ $tags = [
     'track', 'u', 'ul', 'var', 'video'
 ];
 
-$tags       = \implode('|', $tags);
+$tags = \implode('|', $tags);
 $attributes = \implode('|', $attributes);
 
 /**
@@ -51,7 +51,7 @@ $attributes = \implode('|', $attributes);
 \define('ATTRIBUTES_REGEX', '/^(' . $attributes . '|data-[\w\-]+)e?s$/');
 
 /**
- * @param string         $html
+ * @param string $html
  * @param InterfaceCache $cache
  *
  * @return AdvancedHtmlDom
@@ -64,7 +64,7 @@ function str_get_html($html, InterfaceCache $cache = null)
 }
 
 /**
- * @param string         $html
+ * @param string $html
  * @param InterfaceCache $cache
  *
  * @return AdvancedHtmlDom
@@ -73,8 +73,7 @@ function strGetHtml($html, InterfaceCache $cache = null)
 {
     $adv = new AdvancedHtmlDom($html);
 
-    if ($cache)
-    {
+    if ($cache) {
         $adv->setCache($cache);
     }
 
@@ -82,7 +81,7 @@ function strGetHtml($html, InterfaceCache $cache = null)
 }
 
 /**
- * @param string         $url
+ * @param string $url
  * @param InterfaceCache $cache
  *
  * @return AdvancedHtmlDom
@@ -91,24 +90,18 @@ function strGetHtml($html, InterfaceCache $cache = null)
  */
 function file_get_html($url, InterfaceCache $cache = null)
 {
-    if ($cache)
-    {
-        return str_get_html($cache->get($url));
-    }
-
-    return str_get_html(file_get_contents($url));
+    return fileGetHtml($url, $cache);
 }
 
 /**
- * @param string         $url
+ * @param string $url
  * @param InterfaceCache $cache
  *
  * @return AdvancedHtmlDom
  */
 function fileGetHtml($url, InterfaceCache $cache = null)
 {
-    if ($cache)
-    {
+    if ($cache) {
         return strGetHtml($cache->get($url));
     }
 
@@ -116,7 +109,7 @@ function fileGetHtml($url, InterfaceCache $cache = null)
 }
 
 /**
- * @param string         $html
+ * @param string $html
  * @param InterfaceCache $cache
  *
  * @return AdvancedHtmlDom
@@ -125,18 +118,11 @@ function fileGetHtml($url, InterfaceCache $cache = null)
  */
 function str_get_xml($html, InterfaceCache $cache = null)
 {
-    $adv = new AdvancedHtmlDom($html, true);
-
-    if ($cache)
-    {
-        $adv->setCache($cache);
-    }
-
-    return $adv;
+    return strGetXml($html, $cache);
 }
 
 /**
- * @param string         $html
+ * @param string $html
  * @param InterfaceCache $cache
  *
  * @return AdvancedHtmlDom
@@ -145,8 +131,7 @@ function strGetXml($html, InterfaceCache $cache = null)
 {
     $adv = new AdvancedHtmlDom($html, true);
 
-    if ($cache)
-    {
+    if ($cache) {
         $adv->setCache($cache);
     }
 
@@ -154,7 +139,7 @@ function strGetXml($html, InterfaceCache $cache = null)
 }
 
 /**
- * @param string         $url
+ * @param string $url
  * @param InterfaceCache $cache
  *
  * @return AdvancedHtmlDom
@@ -163,26 +148,18 @@ function strGetXml($html, InterfaceCache $cache = null)
  */
 function file_get_xml($url, InterfaceCache $cache = null)
 {
-    if ($cache)
-    {
-        return str_get_xml($cache->get($url));
-    }
-
-    return str_get_xml(file_get_contents($url));
+    return fileGetXml($url, $cache);
 }
 
 /**
- * @param string         $url
+ * @param string $url
  * @param InterfaceCache $cache
  *
  * @return AdvancedHtmlDom
- *
- * @deprecated fileGetXml
  */
 function fileGetXml($url, InterfaceCache $cache = null)
 {
-    if ($cache)
-    {
+    if ($cache) {
         return strGetXml($cache->get($url));
     }
 
