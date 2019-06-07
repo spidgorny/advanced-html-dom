@@ -48,7 +48,7 @@ class AdvancedHtmlBase
      */
     public function html()
     {
-        return $this->doc->dom->saveHTML($this->node);
+        return $this->doc->dom->saveXML($this->node);
     }
 
     /**
