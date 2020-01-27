@@ -9,11 +9,12 @@ use function Bavix\AdvancedHtmlDom\fileGetHtml;
 class BaseTest extends Unit
 {
 
-    public function testHelpers()
+    /**
+     * @return void
+     */
+    public function testHelpers(): void
     {
-        $file = fileGetHtml(
-            $this->partial('base.simple')
-        );
+        $file = fileGetHtml($this->partial('base.simple'));
 
         $str = strGetHtml(
             \file_get_contents(
@@ -27,11 +28,12 @@ class BaseTest extends Unit
         );
     }
 
-    public function testSimple()
+    /**
+     * @return void
+     */
+    public function testSimple(): void
     {
-        $this->dom->loadFile(
-            $this->partial('base.simple')
-        );
+        $this->dom->loadFile($this->partial('base.simple'));
 
         preg_match('~<h1.*>(.+)</h1>~', $this->dom->html(), $outs);
 
@@ -51,11 +53,12 @@ class BaseTest extends Unit
         );
     }
 
-    public function testId()
+    /**
+     * @return void
+     */
+    public function testId(): void
     {
-        $this->dom->loadFile(
-            $this->partial('base.simple')
-        );
+        $this->dom->loadFile($this->partial('base.simple'));
 
         $this->assertSame(
             $this->dom->find('#id')->tag,
@@ -73,21 +76,36 @@ class BaseTest extends Unit
         );
     }
 
-    public function testUl()
+    /**
+     * @return void
+     */
+    public function testUl(): void
     {
-        $this->dom->loadFile(
-            $this->partial('base.simple')
-        );
+        $this->dom->loadFile($this->partial('base.simple'));
 
         $ul = $this->dom->find('ul');
 
-//        var_dump($ul->());die;
+        $items = [];
+        foreach ($ul as $ulItem) {
+            foreach ($ulItem->childNodes as $childNode) {
+                $items[] = (int)$childNode->innerText;
+            }
+        }
 
-//        foreach ($li as $item)
-//        {
-//
-//        }
+        $this->assertCount(3, $items);
+        $this->assertEquals(6, array_sum($items));
+    }
 
+    /**
+     * @return void
+     */
+    public function testPlaceholder(): void
+    {
+        $this->dom->loadFile($this->partial('base.simple'));
+        $input = $this->dom->find('input[placeholder]');
+        foreach ($input as $item) {
+            $this->assertEquals($item->value, $item->placeholder);
+        }
     }
 
 }
