@@ -7,7 +7,8 @@ use Bavix\AdvancedHtmlDom\CacheSystem\InterfaceCache;
 $attributes = [
     'href', 'src', 'id', 'class', 'name',
     'text', 'height', 'width', 'content',
-    'value', 'title', 'alt'
+    'value', 'title', 'alt',
+    'placeholder',
 ];
 
 $tags = [
@@ -24,7 +25,7 @@ $tags = [
     'param', 'pre', 'script', 'section', 'select', 'small', 'source', 'span',
     'strong', 'style', 'sub', 'sup', 'table', 'tbody', 'td',
     'textarea', 'tfoot', 'th', 'thead', 'title', 'tr',
-    'track', 'u', 'ul', 'var', 'video'
+    'track', 'u', 'ul', 'var', 'video',
 ];
 
 $tags = \implode('|', $tags);
