@@ -13,7 +13,7 @@
   "license": "MIT",
   "type": "library",
   "require": {
-    "php": "^7.1",
+    "php": "^7.1 || ^8",
     "ext-libxml": "*",
     "ext-dom": "*",
     "ext-xml": "*"
